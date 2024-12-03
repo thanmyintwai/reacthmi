@@ -1,8 +1,23 @@
-import { useState, useEffect, useCallback } from 'preact/hooks'
+import { useState, useEffect, useCallback, useMemo } from 'preact/hooks'
 import { Button, Card, Navbar, Checkbox, Label, Radio } from "flowbite-react";
-import { HiOutlineArrowRight, HiOutlineArrowLeft, HiOutlineArrowDown, HiOutlineArrowUp } from "react-icons/hi";
-
+import { HiOutlineArrowRight, HiOutlineArrowLeft, HiOutlineArrowDown, HiOutlineArrowUp, HiHome } from "react-icons/hi";
+import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+
+const getFormData = async () => {
+  try {
+
+    const url = 'http://10.0.0.11:3001/form'
+    const response = await axios.get(url);
+    return response.data;
+  } catch (err) {
+    console.log("Error", err);
+    return {}
+  }
+
+}
 
 export default function Home() {
 
@@ -4063,6 +4078,39 @@ export default function Home() {
   const [showDialog, setShowDialog] = useState(false);
 
 
+  const { isLoading, isFetching, data, isError, error, refetch } = useQuery(['formData'], () => getFormData(), {
+    enabled: true,
+    keepPreviousData: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+     onSuccess: (data) => {
+      console.log("Form data is", data);
+
+     
+        //setFormData(data);
+
+        try{
+          const { show } = showDialog
+
+          if(show === true){
+            console.log("Show Dialog is ", show);
+            setShowDialog((prev) => {
+              return {
+               show: false
+              }
+            })
+          }
+        }catch(err){
+
+        }
+     
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    }
+  });
+
+
 
   useEffect(() => {
     console.log('Home Screen')
@@ -4076,62 +4124,173 @@ export default function Home() {
     //return path.split('.')
   };
 
+  const setNestedProperty = (obj, path, value) => {
+    try{
+      const parts = path.split('.');
+      const last = parts.pop();
+      const target = parts.reduce((acc, part) => {
+        if (!acc[part]) {
+          acc[part] = {};
+        }
+        console.log("Acc is ", acc[part]);
+        return acc[part];
+      }, obj);
+      target[last] = typeof value !== 'Boolean' ? value : Boolean(value);
+      console.log("Successfully set value:", value, "at path:", path);
+      return obj;
+
+    }catch(err){
+      console.log("Error in setting nested property ", err);
+      return undefined
+    }
+  
+  };
+
+
+  const subToogleDialog = ({data, obj}) =>{
+      try{
+
+          const selected = obj
+        
+        
+          let definition = null
+          let min = null
+          let max = null
+          let description = null
+          let dCurrentView = null
+          let currentRoute = null;
+          let value = null
+          try {
+            const { journey } = selected;
+            currentRoute = journey;
+            currentRoute = currentRoute.replace("schema.properties.", "properties.");
+            const nestedValue = getNestedProperty(schema, currentRoute);
+            const ref = nestedValue?.["$ref"];
+            const maximum = nestedValue?.["maximum"];
+            const minimum = nestedValue?.["minimum"];
+            description = nestedValue?.["description"];
+            const defKeyName = ref ? ref.split("/").pop() : null;
+            definition = defKeyName ? schema.definitions[defKeyName] : null;
+            console.log("Definition", definition);
+            min = minimum;
+            max = maximum;
+          } catch (err) {
+            console.log("Error", err);
+          }
+
+
+          if(currentRoute){      
+              const routeArrays = currentRoute.split('.');        
+              console.log("Route Arrays is ", routeArrays);
+              const withoutProperties = routeArrays.filter(item => item !== 'properties')
+              const cleanedRouter = withoutProperties.join('.');
+              value = getNestedProperty(data, cleanedRouter);
+          }
+          if(definition){
+            try{
+              const { enumNames } = definition
+              if(enumNames && enumNames.length > 0){
+                dCurrentView = enumNames.length > 8 ? {
+                    start: 0,
+                    end: 7,
+                    total: enumNames.length
+                  } : {
+                    start: 0,
+                    end: enumNames.length,
+                    total: enumNames.length
+                  }
+              }
+
+          }catch(err){
+              console.log("Error in getting enum values ", err);
+            }
+          }
+         
+          setShowDialog((prev) => {
+            return {
+              ...prev,
+              selected,
+              show: !prev.show,
+              definition: definition,
+              min: min,
+              max: max,
+              description: description,
+              dCurrentView: dCurrentView,
+              currentValue: "",
+              data: value,        
+            }
+          })
+
+        }catch(err){
+
+            console.log("Error in subToogleDialog ", err);
+        }
+  }
+
+
 
   const toggleDialog = useCallback((event) => {
     console.log("Passed value into toggle dialog callback is  ", event);
     const { selected } = event
-    console.log(selected); // You can use these parameters as needed
-    /*  const selectedObject = schema.properties[selected];
-     const data = formData?.[selected];
-     let definition = null
-     try {
-       const defKeyName = selectedObject["$ref"].split("/").pop();
-       definition = schema.definitions[defKeyName];
-       console.log("Definition", definition);
-     } catch (err) {
-       console.log("Error", err);
-     }
- 
-     console.log(selectedObject);
- 
-     console.log("Form data is ", data); */
-
+    console.log("Selected value selected is ", selected);
+   
     let definition = null
     let min = null
     let max = null
     let description = null
-
+    let dCurrentView = null
+    let currentRoute = null;
+    let value = null
     try {
-
-      //const { $ref, journey } = selected
-
       const { journey } = selected;
-      let currentRoute = journey;
+      currentRoute = journey;
       currentRoute = currentRoute.replace("schema.properties.", "properties.");
+      console.log("Current Route is ---------", currentRoute);
       const nestedValue = getNestedProperty(schema, currentRoute);
-
       console.log("Clicked Obj details is ", nestedValue);
-
-
       const ref = nestedValue?.["$ref"];
       const maximum = nestedValue?.["maximum"];
       const minimum = nestedValue?.["minimum"];
-
       description = nestedValue?.["description"];
-
       const defKeyName = ref ? ref.split("/").pop() : null;
-
       definition = defKeyName ? schema.definitions[defKeyName] : null;
-
       console.log("Definition", definition);
-
       min = minimum;
       max = maximum;
-
     } catch (err) {
       console.log("Error", err);
     }
 
+    if(currentRoute){      
+        const routeArrays = currentRoute.split('.');        
+        console.log("Route Arrays is ", routeArrays);
+        const withoutProperties = routeArrays.filter(item => item !== 'properties')
+        const cleanedRouter = withoutProperties.join('.');
+        value = getNestedProperty(data, cleanedRouter);
+    }
+    if(definition){
+      try{
+        const { enumNames } = definition
+        if(enumNames && enumNames.length > 0){
+          dCurrentView = enumNames.length > 8 ? {
+              start: 0,
+              end: 7,
+              total: enumNames.length
+            } : {
+              start: 0,
+              end: enumNames.length,
+              total: enumNames.length
+            }
+        }
+
+     }catch(err){
+        console.log("Error in getting enum values ", err);
+      }
+    }
+
+    if(!selected){
+      letUpdate(data);
+    }
 
     setShowDialog((prev) => {
       return {
@@ -4142,18 +4301,373 @@ export default function Home() {
         min: min,
         max: max,
         description: description,
-        // id: selected,
-        // data
+        dCurrentView: dCurrentView,
+        currentValue: "",
+        data: value,        
       }
     })
   }, []);
 
 
+  useEffect(() =>{
+    console.log("Show Dialog is xxxx", showDialog);
+  },[showDialog])
 
+
+
+  const optionSelector = async ({indexValue}) => {
+    try{
+      const {selected } = showDialog
+      const { journey } = selected;
+
+      const routeArray = journey.split('.');
+      const noProps = routeArray.filter(item => item !== 'properties').join('.');
+      const noSchema = noProps.replace("schema.", "")
+      console.log("No Schema is ", noSchema);
+
+      const copiedData = JSON.parse(JSON.stringify(data));
+      const updatedData = setNestedProperty(copiedData, noSchema, indexValue);
+
+      console.log("Updated Data is ", updatedData);
+
+     if(updatedData !== null && updatedData !== undefined){
+         console.log("Updated Data is ", updatedData);
+         const response = await updateFormData(updatedData);
+         console.log("Response is ", response);
+         refetch();      
+      }  
+
+
+    }catch(err){
+      console.log("Error in option selector ", err);
+    }
+  }
+
+
+  const letUpdate = async () => {
+    console.log("I am calling to update the data ");
+    console.log("Current Dialogs is ", showDialog);
+
+    try{
+
+      const {  
+          currentValue,
+          max, 
+          min,
+          selected
+       } = showDialog;
+
+       const { journey } = selected;
+
+       const routeArray = journey.split('.');
+       const noProps = routeArray.filter(item => item !== 'properties').join('.');
+       const noSchema = noProps.replace("schema.", "")
+       console.log("No Schema is ", noSchema);
+
+       const copiedData = JSON.parse(JSON.stringify(data));
+       const updatedData = setNestedProperty(copiedData, noSchema, currentValue);
+
+       console.log("Updated Data is ", updatedData);
+
+      if(updatedData !== null && updatedData !== undefined){
+          console.log("Updated Data is ", updatedData);
+          const response = await updateFormData(updatedData);
+          console.log("Response is ", response);
+          refetch();      
+       }  
+
+
+
+    }catch(err){
+      console.log("Error in let update ", err);
+    }
+}
+
+
+
+  const handleButtonClick1 = useCallback((buttonValue) => {
+    console.log("Button Value is ", buttonValue);
+    try{
+
+      let eixstingValue = showDialog?.currentValue ? showDialog.currentValue : "";
+
+      let stringArray = eixstingValue.split("");
+
+      if (buttonValue === 'Del' && eixstingValue.length > 0) {  
+
+        stringArray.pop();
+
+        //const newValue = eixstingValue.slice(0, -1);
+        //eixstingValue = newValue;
+      } else {
+        stringArray.push(buttonValue);
+        //console.log("Updted string is ", String(eixstingValue) + String(buttonValue));
+        //eixstingValue = String(eixstingValue) + String(buttonValue);
+      }
+
+      console.log("Existing Value is ", eixstingValue);
+
+      if(stringArray.length > 0){
+        const newValue = stringArray.join("");
+        console.log("Setting the value ", eixstingValue);
+        setShowDialog((prev) => {
+          return {
+            ...prev,
+            currentValue: newValue
+          }
+        })
+      }
+
+
+    }catch(err){
+      console.log("Error in handle button click ", err);
+    }
+    
+   /*  setValue((prevValue) => {
+      if (buttonValue === 'Del') {
+        return prevValue.slice(0, -1);
+      }
+      return prevValue + buttonValue;
+    }); */
+  }, []);
+
+
+ const updateFormData = async (data) => {
+  try {
+
+    const url = 'http://10.0.0.11:3001/form'
+    const response = await axios.put(url, data);
+    return response.data;
+  } catch (err) {
+    console.log("Error", err);
+    return {}
+  }
+
+ }
+
+
+  const handleButtonClick = (buttonValue) => {
+    //console.log("Button Value is ", buttonValue);
+    try{
+
+      let eixstingValue = showDialog?.currentValue ? showDialog.currentValue : "";
+
+      let stringArray = eixstingValue.split("");
+
+      if (buttonValue === 'Del') {  
+        stringArray.pop();
+        //const newValue = eixstingValue.slice(0, -1);
+        //eixstingValue = newValue;
+      } else {
+        stringArray.push(buttonValue);
+        //console.log("Updted string is ", String(eixstingValue) + String(buttonValue));
+        //eixstingValue = String(eixstingValue) + String(buttonValue);
+      }
+
+      //console.log("Existing Value is ", eixstingValue);
+
+      //if(stringArray.length > 0){
+        const newValue = stringArray.join("");
+        //console.log("Setting the value ", eixstingValue);
+        setShowDialog((prev) => {
+          return {
+            ...prev,
+            currentValue: newValue
+          }
+        })
+      //}
+
+
+    }catch(err){
+      console.log("Error in handle button click ", err);
+    }
+    
+ 
+  };
 
   useEffect(()=>{
       console.log("Selected Title is ", selectedTitle);
   },[selectedTitle])
+
+
+  /* useEffect(() =>{
+      console.log("Data has changed")
+     try{
+      if(showDialog){
+        const { show, currentValue } = showDialog;
+        if(show === true && currentValue){
+          setShowDialog((prev) => {
+            return {
+              ...prev,
+              show: false
+            }
+          })
+        }
+     }
+
+     }catch(err){
+        console.log("Error in updating the data ", err);
+     }
+      
+  },[showDialog]) */
+
+
+  const memoedList = useMemo(() => {
+    if(!selectedTitle){
+      return null;
+    }     
+     return Object.keys(selectedTitle.subTitles).map((menu, index) => {            
+      const obj = selectedTitle.subTitles[menu];
+      let valueToShow = null;
+      let cleanedRouter = null;
+      let valueID = null
+      let valueIDs = null
+      try {
+        const currentRoute = obj?.journey ? obj.journey : null;
+        if (currentRoute) {
+          const routeArrays = currentRoute.split('.');
+          const withoutProperties = routeArrays.filter(item => item !== 'properties')
+          if (withoutProperties.length > 1) {
+            withoutProperties.shift();
+          }
+          cleanedRouter = withoutProperties.join('.');
+          //console.log("Form Data is ", data);
+          //console.log("........... Cleaned Router is ", cleanedRouter);
+          const value = getNestedProperty(data, cleanedRouter);
+
+          //console.log("Value is", value);
+
+          if(value !== null && value !== undefined){
+            if(Array.isArray(value)){
+             // console.log("Yes it is an array");             
+              valueToShow = value[0];
+              valueIDs = value;
+            }else{             
+             // console.log("###################")
+             // console.log("No it is not an array");
+              const doubleClened = currentRoute ? currentRoute.replace("schema.properties.", "properties.") : null;
+             // console.log("Double Cleaned is ", doubleClened);
+              const nestedValue = doubleClened ? getNestedProperty(schema, doubleClened) : null;
+             // console.log("Nested Value is ", nestedValue);
+              const ref = nestedValue?.["$ref"];
+             // console.log("Ref is ", ref);
+              const defKeyName = ref ? ref.split("/").pop() : null;
+             // console.log("DefKeyName is ", defKeyName);
+              const definition = defKeyName ? schema.definitions[defKeyName] : null;
+             // console.log("Definition is ", definition);
+              const correspondingValue = definition?.enumNames[value];
+            //  console.log("Corresponding Value is ", correspondingValue);
+              valueToShow = correspondingValue ? correspondingValue : value;
+              valueID = value;
+            //  console.log("-------------------");
+            }
+          }
+        }
+      } catch (err) {
+        console.log("Error in getting value ", err);
+      }
+      const { hasNext, type: currentType,  } = obj
+      //if(index < start || index > end){
+      //  return null;
+      //}
+
+      return <div className="columns-1 mx-4">
+        <div 
+            key={index} 
+            className="flex flex-row justify-between justify-items-center py-2 mx-10 border-b border-gray-200"
+            onClick={(event, index) => {
+              if (currentType === "boolean") {
+                // Do nothing for boolean type
+                return;
+              }
+              if (obj.type === "object") {
+                let currentRoute = obj.journey;
+                currentRoute = currentRoute.replace("schema.properties.", "properties.");
+                const nestedValue = getNestedProperty(schema, currentRoute);
+                //console.log("Clicked Obj details is ", nestedValue);
+                const title = nestedValue.title;
+                const type = nestedValue.type;
+                const subTitles = nestedValue.properties;
+                const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
+                  const title = subTitles[subItem].title;
+                  const type = subTitles[subItem].type;
+                  const key = subItem;
+                  const journey = `${currentRoute}.properties.${subItem}`;
+                  const hasNext = type === "object" ? true : false;
+                  return {
+                    title,
+                    type,
+                    key,
+                    journey,
+                    hasNext
+                  };
+                })
+                setSelectedTitle((prev) => {
+                  return {
+                    ...prev,
+                    key: obj.key,
+                    title: title,
+                    subTitles: updatedSubTitles,
+                    type: type,
+                    previous: selectedTitle.title,
+                    current: obj.key,
+                    hasNext: true, // This is for the back button
+                    journey: currentRoute,
+                  }
+
+                })
+              } else {
+                console.log("Lets toggle the dialog");
+                console.log("Event is ", event);
+                console.log("Selected is ", obj);
+                console.log("Current Data is ", data);
+
+                //toggleDialog({ event, selected: obj })
+                subToogleDialog({data, obj})
+              }
+            }}
+            >
+          <h2>{`${obj.title}`}</h2>
+         <p
+          
+         >{hasNext === true ? <Button size='xs' outline>
+            <HiOutlineArrowRight className="h-6 w-6" />
+          </Button> :
+            currentType === "boolean" ? (
+              <label className="inline-flex relative items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"                  
+                  checked={valueToShow}
+                  onChange={async (event) => {
+                      console.log("Event issss ", event.target.checked);
+                      console.log("Current Route is ", cleanedRouter);
+                      const copiedData = JSON.parse(JSON.stringify(data));
+                      console.log("Copied Data is ", copiedData);
+                      const updatedData = setNestedProperty(copiedData, cleanedRouter, event.target.checked);
+                      console.log("Updated Data is ", updatedData);
+                      if(updatedData){
+                        //Let's update the data
+                        const responses = await updateFormData(updatedData);
+                        console.log("Responses is ", responses);
+                        if(responses){
+                          refetch();
+                        }
+                      }
+                  }}
+                />
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#ff8000] peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+              </label>
+            ) : (valueToShow !== null && valueToShow !== undefined )? valueToShow : "N/A"
+          }</p>
+        </div>
+      </div>
+    })
+
+  }, [selectedTitle, data])
+
+
+
 
   return (
     <>
@@ -4197,15 +4711,18 @@ export default function Home() {
                     setSelectedTitle({
                       key: item,
                       title: title,
-                      //subTitles: schema.properties[item].properties,
                       subTitles: updatedSubTitles,
-                      currentView: updatedSubTitles.length > 8 ? {
+                     /*  currentView: updatedSubTitles.length > 8 ? {
                         start: 0, 
                         end: 7
                       }: {
                         start: 0,
                         end: updatedSubTitles.length
-                      }, 
+                      }, */ 
+                      currentView: {
+                        start: 0,
+                        end: updatedSubTitles.length
+                      },
                       type: type,
                       previous: null,
                       current: item,
@@ -4213,7 +4730,6 @@ export default function Home() {
                       journey: `schema.properties.${item}`
                     });
                   }}>
-                    {/* {item[id].icon} */}
                   </Button>
                 </Card>
               )
@@ -4224,7 +4740,7 @@ export default function Home() {
         <>
           <Navbar fluid rounded className='bg-[#ff8000]'>
             <Navbar.Brand href="https://flowbite-react.com">
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${selectedTitle.title} : ${selectedTitle.previous}`}</span>
+              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${selectedTitle.title}`}</span>
             </Navbar.Brand>
             <div className="flex md:order-2">
               <Button
@@ -4233,49 +4749,77 @@ export default function Home() {
                   setSelectedTitle(null);
                 }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+               {/*  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
-                </svg>
+                </svg> */}
+                <HiHome className="h-7 w-7" />
               </Button>
              
             </div>
           </Navbar>
-          {Object.keys(selectedTitle.subTitles).map((menu, index) => {            
+         {/*  {Object.keys(selectedTitle.subTitles).map((menu, index) => {            
             const obj = selectedTitle.subTitles[menu];
-            const { start, end } = selectedTitle?.currentView
-            const { hasNext, type: currentType,  } = obj
-            if(index < start || index > end){
-              return null;
+            let valueToShow = null;
+            let cleanedRouter = null;
+            try {
+              const currentRoute = obj?.journey ? obj.journey : null;
+              if (currentRoute) {
+                const routeArrays = currentRoute.split('.');
+                const withoutProperties = routeArrays.filter(item => item !== 'properties')
+                if (withoutProperties.length > 1) {
+                  withoutProperties.shift();
+                }
+                cleanedRouter = withoutProperties.join('.');
+                console.log("Form Data is ", data);
+                const value = getNestedProperty(data, cleanedRouter);
+                if(value){
+                  if(Array.isArray(value)){
+                    valueToShow = value[0];
+                  }else{
+                    valueToShow = value;
+                  }
+                }
+              }
+            } catch (err) {
+
             }
+            const { hasNext, type: currentType,  } = obj
+            //if(index < start || index > end){
+            //  return null;
+            //}
+
             return <div className="columns-1 mx-4">
-              <div key={index} className="flex flex-row justify-between justify-items-center py-2">
-                <h2>{`${obj.title}`}</h2>
-               <p
-                onClick={(event, index) => {
-                  console.log("Object is clicked ", obj);
-                  if (obj.type === "object") {
-                    let currentRoute = obj.journey;
-                    currentRoute = currentRoute.replace("schema.properties.", "properties.");
-                    const nestedValue = getNestedProperty(schema, currentRoute);
-                    console.log("Clicked Obj details is ", nestedValue);
-                    const title = nestedValue.title;
-                    const type = nestedValue.type;
-                    const subTitles = nestedValue.properties;
-                    const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
-                      const title = subTitles[subItem].title;
-                      const type = subTitles[subItem].type;
-                      const key = subItem;
-                      const journey = `${currentRoute}.properties.${subItem}`;
-                      const hasNext = type === "object" ? true : false;
-                      return {
-                        title,
-                        type,
-                        key,
-                        journey,
-                        hasNext
-                      };
-                    })
-                    setSelectedTitle((prev) => {
+              <div 
+                  key={index} 
+                  className="flex flex-row justify-between justify-items-center py-2"
+                  onClick={(event, index) => {
+                    if (currentType === "boolean") {
+                      // Do nothing for boolean type
+                      return;
+                    }
+                    if (obj.type === "object") {
+                      let currentRoute = obj.journey;
+                      currentRoute = currentRoute.replace("schema.properties.", "properties.");
+                      const nestedValue = getNestedProperty(schema, currentRoute);
+                      //console.log("Clicked Obj details is ", nestedValue);
+                      const title = nestedValue.title;
+                      const type = nestedValue.type;
+                      const subTitles = nestedValue.properties;
+                      const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
+                        const title = subTitles[subItem].title;
+                        const type = subTitles[subItem].type;
+                        const key = subItem;
+                        const journey = `${currentRoute}.properties.${subItem}`;
+                        const hasNext = type === "object" ? true : false;
+                        return {
+                          title,
+                          type,
+                          key,
+                          journey,
+                          hasNext
+                        };
+                      })
+                      setSelectedTitle((prev) => {
                         return {
                           ...prev,
                           key: obj.key,
@@ -4285,20 +4829,18 @@ export default function Home() {
                           previous: selectedTitle.title,
                           current: obj.key,
                           hasNext: true, // This is for the back button
-                          journey: currentRoute, 
-                          
-                        }  
-                    
-                    })
-                  
+                          journey: currentRoute,
+                        }
 
-
-                  } else {
-                    toggleDialog({ event, selected: obj })
-                  }
-
-
-                }}  
+                      })
+                    } else {
+                      toggleDialog({ event, selected: obj })
+                    }
+                  }}
+                  >
+                <h2>{`${obj.title}`}</h2>
+               <p
+                
                >{hasNext === true ? <Button size='xs' outline>
                   <HiOutlineArrowRight className="h-6 w-6" />
                 </Button> :
@@ -4307,19 +4849,38 @@ export default function Home() {
                       <input
                         type="checkbox"
                         className="sr-only peer"
-                        checked={true}
+                        checked={valueToShow}
+                        onChange={async (event) => {
+                            console.log("Event is ", event.target.checked);
+                            console.log("Current Route is ", cleanedRouter);
+                            const copiedData = JSON.parse(JSON.stringify(data));
+                            console.log("Copied Data is ", copiedData);
+                            const updatedData = setNestedProperty(copiedData, cleanedRouter, event.target.checked);
+                            console.log("Updated Data is ", updatedData);
+                            
+
+                            if(updatedData){
+                              //Let's update the data
+
+                              const responses = await updateFormData(updatedData);
+                              console.log("Responses is ", responses);
+                              if(responses){
+                                refetch();
+                              }
+                            }
+                        }}
                       />
                       <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
                     </label>
-                  ) : "Value"
+                  ) : valueToShow ? valueToShow : "N/A"
                 }</p>
               </div>
             </div>
-          })}
+          })} */}
+          {memoedList}
            <div className="columns-1 mx-4">
-           <div className="flex flex-row justify-between justify-items-center py-2">
-            
-           <Button size='xs' outline
+           <div className="flex flex-row justify-between justify-items-center py-2">            
+           <Button size='xs' className='bg-[#ff8000] hover:bg-yellow-500' outline
                 onClick={() =>{
                     const splites = selectedTitle.journey.split('.');
                     const countProperties = splites.filter(item => item === 'properties').length;
@@ -4368,7 +4929,7 @@ export default function Home() {
                 </Button>
                   <div className="flex-grow text-center">
                   <div className="flex justify-center space-x-2">
-                    <Button size='xs' outline 
+                    {/* <Button size='xs' outline 
                         disabled={selectedTitle.currentView.end === selectedTitle.subTitles.length}
                         onClick={() =>{
                           const toBeStart = selectedTitle.currentView.start + 7
@@ -4406,7 +4967,7 @@ export default function Home() {
                         }}
                     >
                       <HiOutlineArrowUp className="h-6 w-6" />
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 
@@ -4419,14 +4980,8 @@ export default function Home() {
         </>
       }
 
-      {showDialog.show && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white w-full h-full flex flex-col justify-between">
-          {/* <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-xl font-semibold">{showDialog.selected.title}</h2>
-            <button onClick={toggleDialog} className="text-gray-500 hover:text-gray-800 text-2xl">
-              &times;
-            </button> 
-          </div> */}
+      {showDialog.show == true && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white w-full h-full flex flex-col justify-between">        
           <div className="flex justify-start items-center p-4 border-b bg-[#ff8000]">            
             <Button size='xs' onClick={toggleDialog} className='mr-3 bg-transparent'> 
               <HiOutlineArrowLeft className="h-6 w-6 text-black" />
@@ -4440,24 +4995,20 @@ export default function Home() {
                   <div className="m-3 border border-gray-300 text-gray-700 p-4 rounded">
                     {showDialog.selected.description}
                   </div>
-                  : null}
-               {/*  <div className="flex flex-row justify-between items-center py-2">
-                  <div className="flex flex-col items-center">
-                    <p>Min : {showDialog?.selected?.minimum}</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <p>Max : {showDialog?.selected?.maximum}</p>
-                  </div>
-                </div> */}
-
-
+                  : null}             
                 {showDialog?.selected?.type === "integer" ? (
                   showDialog?.definition ? (
+                    <>
                     <div className="flex max-w-md flex-col gap-4 space-y-6" id="checkbox">
                       {
                         showDialog?.definition?.items ?
-                          showDialog?.definition?.items?.enumNames?.map((option, index) => (
-                            <div
+                          showDialog?.definition?.items?.enumNames?.map((option, index) => {
+                           const { start, end } = showDialog?.dCurrentView
+                           if(start !== null && end !== null && start !== undefined && end !== undefined){
+                            if(index < start || index > end){
+                              return null;
+                            }else{
+                              return <div
                               key={index}
                               className="flex items-center gap-2">
                               <Checkbox
@@ -4468,10 +5019,56 @@ export default function Home() {
                               <Label
                                 htmlFor={`option-${index}`}>{showDialog?.definition?.enumNames[index]}</Label>
                             </div>
-                          ))
-                          :
-                          showDialog?.definition?.enumNames?.map((option, index) => (
-                            <div key={index} className="flex items-center gap-2">
+                            }
+                           }
+                            return <div
+                              key={index}
+                              className="flex items-center gap-2">
+                              <Checkbox
+                                defaultChecked={showDialog.data?.includes(index)}
+                                id={`option-${index}`}
+
+                              />
+                              <Label
+                                htmlFor={`option-${index}`}>{showDialog?.definition?.enumNames[index]}</Label>
+                            </div>
+                          })
+                          :<>
+                          {/* showDialog?.definition?.enumNames?.map((option, index) => {
+                            const { start, end } = showDialog?.dCurrentView
+                            if(start !== null && end !== null && start !== undefined && end !== undefined){
+                              if(index < start || index > end){
+                                return null;
+                              }else{
+                                return <div key={index} className="flex items-center gap-2">
+                            <Radio
+                                  className='text-[#ff8000]'
+                                  defaultChecked={showDialog.data === index}
+                                  id={`option-${index}`}
+                                  name={`${showDialog.id}_radio`}
+                                  value={showDialog?.definition?.enumNames[index]}                                
+                                  onChange={(event) => {                                      
+                                      setShowDialog((prev) => {                                        
+                                        return {  
+                                          ...prev,  
+                                          currentValue: index
+                                        }
+                                      })
+                                  }}
+                                />
+                                <Label
+                                  className={
+                                    showDialog.data === index ? 
+                                    'bg-[#ff8000] text-white rounded px-10 py-2'                               
+                                    : 
+                                    'bg-slate-50 text-[#ff8000] rounded px-10 py-2 border border-[#ff8000]' 
+                                  }
+                                  htmlFor={`option-${index}`}>{showDialog?.definition?.enumNames[index]}</Label> 
+                              </div>
+                              }
+                             }
+
+                            return <div key={index} className="flex items-center gap-2">
                               <Radio
                                 defaultChecked={showDialog.data === index}
                                 id={`option-${index}`}
@@ -4481,39 +5078,126 @@ export default function Home() {
                               <Label
                                 htmlFor={`option-${index}`}>{showDialog?.definition?.enumNames[index]}</Label>
                             </div>
-                          ))
+                          }) */}
+                    
+                            {showDialog?.definition?.enumNames?.map((option, index) => {
+                                const { start, end } = showDialog?.dCurrentView;
+                                if(start !== null && end !== null && start !== undefined && end !== undefined){
+                                  if(index < start || index > end){
+                                    return null;
+                                  }else{
+                                    return (
+                                        <Button
+                                          className={`text-white ${showDialog.data === index ? 'bg-[#ff8000]' : 'bg-slate-50 text-[#ff8000] border border-[#ff8000]'}`}
+                                          outline={showDialog.data !== index}
+                                          key={`option-${index}`}
+                                          onClick={() => {                                           
+                                            optionSelector({indexValue: index})
+                                          }}
+                                        >{`${showDialog?.definition?.enumNames[index]}`}</Button>
+                                    );
+                                  }
+                                }
+
+                            })}
+                  
+
+                          </>
 
                       }
                     </div>
+                    {
+                        showDialog?.dCurrentView?.total !== null && showDialog?.dCurrentView?.total !== undefined && showDialog?.dCurrentView?.total > 7 ? (
+
+
+                 
+                      <div className="flex-grow text-center">
+                        <div className="flex justify-center space-x-2">
+                          <Button size='xs' outline                             
+                             disabled={showDialog?.dCurrentView?.end === showDialog?.dCurrentView?.total}
+                             onClick={() => {
+                              const toBeStart = (showDialog?.dCurrentView?.start !== null &&  showDialog?.dCurrentView?.start !== undefined)? showDialog?.dCurrentView?.start + 7 : null
+                              const safeToBeEnd = toBeStart ? toBeStart + 7 : null
+                              const total = (showDialog?.dCurrentView?.total !== null && showDialog?.dCurrentView?.total !== undefined) ? showDialog?.dCurrentView?.total : 0
+                              if(total > 0){
+                                setShowDialog((prev) => {
+                                  return {
+                                    ...prev,
+                                    dCurrentView: {
+                                      start: toBeStart,
+                                      end: safeToBeEnd > total ? total : safeToBeEnd,
+                                      total: total
+                                    }
+                                  }
+
+                                })                           
+                              }                             
+                            }} 
+                          >
+                            <HiOutlineArrowDown className="h-6 w-6" />
+                          </Button>
+                          <Button size='xs' outline
+                            disabled={showDialog?.dCurrentView?.start === 0}
+                            onClick={() => {
+                              const safeToStart = (showDialog?.dCurrentView?.start !== null && showDialog?.dCurrentView?.start !== undefined) ? showDialog?.dCurrentView?.start - 7 : null
+                              const safeToBeEnd = (safeToStart != null )? safeToStart + 7 : null
+                              const total = (showDialog?.dCurrentView?.total !== null && showDialog?.dCurrentView?.total !== undefined)? showDialog?.dCurrentView?.total : 0
+                              if(total > 0){
+                                setShowDialog((prev) => {
+                                  return {
+                                    ...prev,
+                                    dCurrentView: {
+                                      start: safeToStart < 0 ? 0 : safeToStart,
+                                      end: safeToBeEnd < total ? safeToBeEnd : total,
+                                      total: total
+                                    }
+                                  }
+
+                                }) 
+
+
+                              }
+                            
+                            
+                            
+                            }} 
+                          >
+                            <HiOutlineArrowUp className="h-6 w-6" />
+                          </Button>
+                        </div>
+                      </div>
+                      ) : null 
+                    }
+                    </>
                   ) :<div className="flex justify-between">
                   <div className="w-1/2 flex flex-col items-start space-y-2">
                     <div>
-                      <p className="font-bold">Updated: 10</p>
+                     {/*  <p className="font-bold">{`New Value:${showDialog?.currentValue}`}</p> */}
+                     <p className="font-bold">
+                               New Value:&nbsp;&nbsp;&nbsp;&nbsp;<span className='text-2xl text-[#ff8000]'>{showDialog?.currentValue}</span>
+                    </p>
                     </div>
                     <div>
-                      <p className="font-bold">Current: 10</p>
+                      <p>Current:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{showDialog?.data}</p>
                     </div>
                     <div>
-                      <p className="font-bold">{`Min: ${showDialog?.min}`}</p>
+                     {/*  <p>{`Min:\t ${showDialog?.min}`}</p> */}
+                      <p>Min:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{showDialog?.min}</p>
                     </div>
                     <div>
-                      <p className="font-bold">{`Max: ${showDialog?.max}`}</p>
-                    </div>                   
-                    {/* <div>
-                      <p className="font-bold">Updated:</p>
-                      <p>Value of Updated</p>
-                    </div> */}
+                    <p>Max:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{showDialog?.max}</p>
+                    </div>                 
                     <div>
                       <p>{`${showDialog?.description}`}</p>                      
                     </div>
                   </div>
                 
                   <div className="w-1/2 grid grid-cols-3 gap-2">                  
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', 'Del'].map((buttonValue) => (
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9',  '.', '0','-', 'Del'].map((buttonValue) => (
                       <button
                         key={buttonValue}
                         className="bg-gray-200 p-2 rounded"
-                        //onClick={() => handleButtonClick(buttonValue)}
+                        onClick={() => handleButtonClick(buttonValue)}
                       >
                         {buttonValue}
                       </button>
@@ -4526,22 +5210,20 @@ export default function Home() {
                 ) : null}
 
 
-              <div className="flex justify-end space-x-2 p-4 border-b">           
-              <button onClick={toggleDialog} className="px-4 py-2 bg-[#ff8000] text-white rounded hover:bg-yellow-500">
-                Confirm
+      {showDialog?.definition?.enumNames ? null :   
+              <div className="flex justify-end space-x-2 p-4 border-b">     
+              <button onClick={toggleDialog} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-500">
+                Cancel
+              </button>      
+              <button onClick={letUpdate} className="px-4 py-2 bg-[#ff8000] text-white rounded hover:bg-yellow-500">
+                Update
               </button>
-            </div>
+            </div>}
+
 
               </div>
             </div>
-           {/*  <div className="flex justify-end space-x-2 p-4 border-t">
-             <button onClick={toggleDialog} className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
-                Cancel
-              </button>
-              <button onClick={toggleDialog} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Confirm
-              </button>
-            </div> */}
+         
           </div>
         </div>
       </div>
