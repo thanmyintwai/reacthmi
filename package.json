@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://github.com/thanmyintwai/reacthmi",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve-json": "json-server --watch jsonserver/db.json --host 0.0.0.0 --port 3001"
+    "serve-json": "json-server --watch jsonserver/db.json --host 0.0.0.0 --port 3001",   
+     "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@rjsf/core": "^5.22.4",
@@ -18,13 +21,14 @@
     "flowbite-react": "^0.10.2",
     "json-server": "^1.0.0-beta.3",
     "preact": "^10.24.3",
-    "react-router-dom": "^6.28.0",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.1",
     "autoprefixer": "^10.4.20",
     "cssnano": "^7.0.6",
+    "gh-pages": "^6.2.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
