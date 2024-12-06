@@ -1,6 +1,9 @@
-import { useState } from 'preact/hooks'
-import { Button, Card } from "flowbite-react";
-
+import { useState, useEffect, useCallback, useMemo } from 'preact/hooks'
+import { Button, Card, Navbar, Checkbox, Label, Radio } from "flowbite-react";
+import { HiOutlineArrowRight, HiOutlineArrowLeft, HiOutlineArrowDown, HiOutlineArrowUp, HiHome } from "react-icons/hi";
+import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Main() {
 
@@ -75,10 +78,29 @@ export default function Main() {
      
   ]  
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center px-4 py-4">
-      <div className='grid grid-cols-2 md:grid-cols-3 gap-4 max-w-lg'>
-       <h1>Main Screen</h1>
-      </div>
+    <Navbar fluid rounded className='bg-[#ff8000]'>
+    <Navbar.Brand href="https://flowbite-react.com">
+      <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${selectedTitle.title}`}</span>
+    </Navbar.Brand>
+    <div className="flex md:order-2">
+     {/*  <Button
+        color="grey"
+        onClick={() => {
+          setSelectedTitle(null);
+        }}
+      >     
+        <HiHome className="h-7 w-7" />
+      </Button> */}
+      <button
+        className='flex items-center justify-center p-2 rounded-md hover:bg-[#ff8000] hover:bg-opacity-50 bg-transparent'
+        onClick={() => {
+          //setSelectedTitle(null);
+        }}
+      >
+        <HiHome className="h-7 w-7" />
+      </button>
+     
     </div>
+  </Navbar>
   );
 };

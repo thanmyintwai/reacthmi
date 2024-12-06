@@ -3,14 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/thanmyintwai/reacthmi",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve-json": "json-server --watch jsonserver/db.json --host 0.0.0.0 --port 3001",   
-     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "serve-json": "json-server --watch jsonserver/db.json --host 0.0.0.0 --port 3001"  
   },
   "dependencies": {
     "@rjsf/core": "^5.22.4",

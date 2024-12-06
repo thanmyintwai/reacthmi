@@ -11,6 +11,7 @@ import MainScreen from './pages/mainScreen';
 import Parameters from './pages/parameters';
 import Basic from './pages/basic';
 import Settings from './pages/settings';
+import Middle  from './pages/middle';
 
 
 const queryClient = new QueryClient()
@@ -23,11 +24,13 @@ export function App() {
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<MainScreen />} />
       <Route path="/main" element={<MainScreen />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/parameters" element={<Parameters />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/basic" element={<Basic />} />
+      <Route path="/middle" element={<Middle />} />
     </Routes>
   </BrowserRouter>
   </QueryClientProvider>

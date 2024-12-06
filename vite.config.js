@@ -4,7 +4,7 @@ import legacy from '@vitejs/plugin-legacy'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/reacthmi/',
+ // base: '/',
   plugins: [
     preact(),
     legacy({

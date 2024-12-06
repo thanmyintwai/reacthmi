@@ -3,10 +3,14 @@ import { Button, Card, Navbar, Checkbox, Label, Radio } from "flowbite-react";
 import { HiOutlineArrowRight, HiOutlineArrowLeft, HiOutlineArrowDown, HiOutlineArrowUp, HiHome } from "react-icons/hi";
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { RxHamburgerMenu } from "react-icons/rx";
+import { MdOutlineSettings } from "react-icons/md";
+
 import axios from 'axios';
 
 
 const getFormData = async () => {
+  return {};
   try {
 
     const url = 'http://10.0.0.11:3001/form'
@@ -25,7 +29,7 @@ export default function Home() {
   const navigate = useNavigate();
 
 
-   const schema = {    
+   const schemaTEst = {    
       "title": "APC9",
       "description": "APC9 v2.03",
       "version": "2.03",
@@ -473,7 +477,7 @@ export default function Home() {
         }
       },
       "properties": {
-        "system": {
+      /*   "system": {
           "title": "System Information",
           "type": "object",
           "readOnly": false,
@@ -505,64 +509,7 @@ export default function Home() {
               "title": "URL"
             }
           }
-        },
-        "wifi": {
-          "title": "Wi-Fi Connection",
-          "type": "object",
-          "description": "Connect to Trusted networks only as device will be accessible over it",
-          "group": "System",
-          "properties": {
-            "connection": {
-              "type": "string",
-              "title": "Connected to"
-            },
-            "ssid": {
-              "type": "string",
-              "title": "SSID",
-              "description": "Select your Wi-Fi network below",
-              "minLength": 0,
-              "maxLength": 31
-            },
-            "pwd": {
-              "type": "string",
-              "title": "Password",
-              "pattern": "^$|^[ -~]{8,63}$",
-              "minLength": 0,
-              "maxLength": 63
-            }
-          }
-        },
-        "lockSettings": {
-          "title": "Unlock Settings",
-          "type": "object",
-          "properties": {
-            "passwordUnlock": {
-              "type": "string",
-              "title": "Enter Password to unlock settings for 10 minutes",
-              "minLength": 1,
-              "maxLength": 32
-            }
-          }
-        },
-        "updatePassword": {
-          "title": "Settings Lock",
-          "type": "object",
-          "menu": "Change Password",
-          "properties": {
-            "oldPassword": {
-              "type": "string",
-              "title": "Enter Current Password",
-              "minLength": 1,
-              "maxLength": 32
-            },
-            "newPassword": {
-              "type": "string",
-              "title": "Enter New Password",
-              "minLength": 1,
-              "maxLength": 32
-            }
-          }
-        },
+        }, */
         "status": {
           "title": "HydroSTART Status",
           "type": "object",
@@ -1066,7 +1013,7 @@ export default function Home() {
             }
           }
         },
-        "testSettings": {
+        /* "testSettings": {
           "title": "HydroSTART Test Settings",
           "type": "object",
           "backup": true,
@@ -1182,9 +1129,96 @@ export default function Home() {
                   "description": "Parity and number of stop bits used for Modbus communication."
                 }
               }
-            }
+            },
+            "SCADA1": {
+              "title": "SCADA 1 Settings",
+              "type": "object",
+              "properties": {
+                "sub_scada": {
+                  "title": "Sub SCADA Settings",
+                  "type": "object",
+                  "properties": {
+                    "sub_scada_ip": {
+                      "title": "17.0 - Sub Scada IP",
+                      "register": 170,
+                      "type": "string",
+                      "format": "ipv4",
+                    }
+                  }
+                },
+
+                "SCADA_baud_rate": {
+                  "title": "17.0 - Scada Baud Rate",
+                  "register": 170,
+                  "type": "integer",
+                  "$ref": "#/definitions/BAUD_RATE",
+                  "description": "Baud rate used for the Modbus communication."
+                },
+                "SCADA_parity": {
+                  "title": "17.1 - Scada Parity",
+                  "register": 171,
+                  "type": "integer",
+                  "$ref": "#/definitions/UART_FORMAT",
+                  "description": "Parity and number of stop bits used for Modbus communication."
+                }
+              }
+            },
+            "SCADA2": {
+              "title": "SCADA 2 Settings",
+              "type": "object",
+              "properties": {
+                "sub_scada": {
+                  "title": "Sub SCADA Settings",
+                  "type": "object",
+                  "properties": {
+                    "sub_scada_ip": {
+                      "title": "17.0 - Sub Scada IP",
+                      "register": 170,
+                      "type": "string",
+                      "format": "ipv4",
+                    }
+                  }
+                },
+
+                "SCADA_baud_rate": {
+                  "title": "17.0 - Scada Baud Rate",
+                  "register": 170,
+                  "type": "integer",
+                  "$ref": "#/definitions/BAUD_RATE",
+                  "description": "Baud rate used for the Modbus communication."
+                },
+                "SCADA_parity": {
+                  "title": "17.1 - Scada Parity",
+                  "register": 171,
+                  "type": "integer",
+                  "$ref": "#/definitions/UART_FORMAT",
+                  "description": "Parity and number of stop bits used for Modbus communication."
+                }
+              }
+            },
+           "pump_1_mode": {
+                  "title": "5.0 - Pump 1 Mode",
+                  "register": 50,
+                  "type": "integer",
+                  "$ref": "#/definitions/PUMP_MODE",
+                  "description": "Operating mode setting for Pump 1. This is an automatic setting and will be saved to EEPROM automatically whenever the value gets updated."
+                },
+                "pump_2_mode": {
+                  "title": "5.1 - Pump 2 Mode",
+                  "register": 51,
+                  "type": "integer",
+                  "$ref": "#/definitions/PUMP_MODE",
+                  "description": "Operating mode setting for Pump 2. This is an automatic setting and will be saved to EEPROM automatically whenever the value gets updated."
+                },
+                "phase_mode": {
+                  "title": "5.2 - Phase Mode",
+                  "register": 52,
+                  "type": "integer",
+                  "$ref": "#/definitions/PHASE_MODE",
+                  "description": "Indicates the number of phases the system is operating with. This is an automatic setting and will be saved to EEPROM automatically whenever the value gets updated."
+                }
           }
-        },
+        }, */
         "settings": {
         "title": "HydroSTART Settings",
         "type": "object",
@@ -1863,6 +1897,24 @@ export default function Home() {
             "register": 197,
             "type": "boolean",
             "description": "Eeprom settings reset and system reset."
+          },
+          "test1_action": {
+            "title": "19.7 - Test 1 Action",
+            "register": 19788,
+            "type": "boolean",
+            "description": "Eeprom settings reset and system reset."
+          },
+          "test2_action": {
+            "title": "19.7 - Test 2 Action",
+            "register": 19799,
+            "type": "boolean",
+            "description": "Eeprom settings reset and system reset."
+          },
+          "test3_action": {
+            "title": "19.7 - Test 3 Action",
+            "register": 19711,
+            "type": "boolean",
+            "description": "Eeprom settings reset and system reset."
           }
         },
         "definitions": {}
@@ -2020,6 +2072,2930 @@ export default function Home() {
     }
   
 
+    const schema = {
+      "title": "HydroTOUCH",
+      "description": "HydroTOUCH v0.0.0",
+      "version": "0.0.0",
+      "type": "object",
+      "properties": {
+          "system": {
+              "title": "System Information",
+              "type": "object",
+              "readOnly": true,
+              "backup": true,
+              "group": "System",
+              "properties": {
+                  "projectName": {
+                      "type": "string",
+                      "title": "Product"
+                  },
+                  "serial": {
+                      "type": "string",
+                      "title": "Serial Number"
+                  },
+                  "firmware": {
+                      "type": "string",
+                      "title": "Firmware Revision"
+                  },
+                  "connection": {
+                      "type": "string",
+                      "title": "Connected to"
+                  },
+                  "ipAddr": {
+                      "type": "string",
+                      "title": "IP Address"
+                  },
+                  "url": {
+                      "type": "string",
+                      "title": "URL"
+                  }
+              }
+          },
+          "wifi": {
+              "title": "Wi-Fi Connection",
+              "type": "object",
+              "description": "Connect to Trusted networks only as device will be accessible over it",
+              "group": "System",
+              "properties": {
+                  "connection": {
+                      "type": "string",
+                      "title": "Connected to"
+                  },
+                  "ssid": {
+                      "type": "string",
+                      "title": "SSID",
+                      "description": "Select your Wi-Fi network below",
+                      "minLength": 0,
+                      "maxLength": 31
+                  },
+                  "pwd": {
+                      "type": "string",
+                      "title": "Password",
+                      "pattern": "^$|^[ -~]{8,63}$",
+                      "minLength": 0,
+                      "maxLength": 63
+                  }
+              }
+          },
+          "lockSettings": {
+              "title": "Unlock Settings",
+              "type": "object",
+              "properties": {
+                  "passwordUnlock": {
+                      "type": "string",
+                      "title": "Enter Password to unlock settings for 10 minutes",
+                      "minLength": 1,
+                      "maxLength": 32
+                  }
+              }
+          },
+          "updatePassword": {
+              "title": "Settings Lock",
+              "type": "object",
+              "menu": "Change Password",
+              "properties": {
+                  "oldPassword": {
+                      "type": "string",
+                      "title": "Enter Current Password",
+                      "minLength": 1,
+                      "maxLength": 32
+                  },
+                  "newPassword": {
+                      "type": "string",
+                      "title": "Enter New Password",
+                      "minLength": 1,
+                      "maxLength": 32
+                  }
+              }
+          },
+          "status": {
+              "title": "HydroTOUCH Status",
+              "type": "object",
+              "readOnly": true,
+              "group": "Controller",
+              "properties": {
+                  "product_code_0": {
+                      "title": "0.1 - Product Code 0",
+                      "register": 1,
+                      "type": "string",
+                      "maxLength": 2,
+                      "description": "Controller product code/identification string packed as two ASCII characters per register. Starts from the upper byte. Value spells APC8."
+                  },
+                  "product_code_1": {
+                      "title": "0.2 - Product Code 1",
+                      "register": 2,
+                      "type": "string",
+                      "maxLength": 2,
+                      "description": "Continuation of controller product code/identification string packed as two ASCII characters per register."
+                  },
+                  "product_code_2": {
+                      "title": "0.3 - Product Code 2",
+                      "register": 3,
+                      "type": "string",
+                      "maxLength": 2,
+                      "description": "Continuation of controller product code/identification string packed as two ASCII characters per register."
+                  },
+                  "revision_major": {
+                      "title": "0.4 - Revision Major",
+                      "register": 4,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "Firmware revision major number.\\nRevision is in the form x.yy where x is the major number and y is the minor number."
+                  },
+                  "revision_minor": {
+                      "title": "0.5 - Revision Minor",
+                      "register": 5,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "Firmware revision minor number.\\nRevision is in the form x.yy where x is the major number and y is the minor number (2 digits with zero padding)."
+                  },
+                  "power_rail_ok": {
+                      "title": "0.6 - Power Rail Ok",
+                      "register": 6,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "A value of 1 indicates 12V power rail is within specifications."
+                  },
+                  "system_state": {
+                      "title": "1.0 - System State",
+                      "register": 10,
+                      "type": "integer",
+                      "$ref": "#/definitions/SYSTEM_STATE",
+                      "description": "Current operating state of the system."
+                  },
+                  "input_states": {
+                      "title": "1.1 - Input States",
+                      "register": 11,
+                      "type": "array",
+                      "$ref": "#/definitions/INPUT_STATES",
+                      "description": "Current state of the discrete inputs."
+                  },
+                  "duty_pump": {
+                      "title": "1.2 - Duty Pump",
+                      "register": 12,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "Indicates which pump is currently the duty pump."
+                  },
+                  "pump_1_state": {
+                      "title": "1.3 - Pump 1 State",
+                      "register": 13,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 1."
+                  },
+                  "pump_2_state": {
+                      "title": "1.4 - Pump 2 State",
+                      "register": 14,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 2."
+                  },
+                  "pump_3_state": {
+                      "title": "1.5 - Pump 3 State",
+                      "register": 15,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 3."
+                  },
+                  "pump_4_state": {
+                      "title": "1.6 - Pump 4 State",
+                      "register": 16,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 4."
+                  },
+                  "pump_5_state": {
+                      "title": "1.7 - Pump 5 State",
+                      "register": 17,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 5."
+                  },
+                  "pump_6_state": {
+                      "title": "1.8 - Pump 6 State",
+                      "register": 18,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 6."
+                  },
+                  "pump_7_state": {
+                      "title": "1.9 - Pump 7 State",
+                      "register": 19,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 7."
+                  },
+                  "pump_8_state": {
+                      "title": "1.10 - Pump 8 State",
+                      "register": 20,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 8."
+                  },
+                  "pump_9_state": {
+                      "title": "1.11 - Pump 9 State",
+                      "register": 21,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 9."
+                  },
+                  "pump_10_state": {
+                      "title": "1.12 - Pump 10 State",
+                      "register": 22,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 10."
+                  },
+                  "pump_11_state": {
+                      "title": "1.13 - Pump 11 State",
+                      "register": 23,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 11."
+                  },
+                  "pump_12_state": {
+                      "title": "1.14 - Pump 12 State",
+                      "register": 24,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_STATE",
+                      "description": "Current state of pump 12."
+                  },
+                  "faults": {
+                      "title": "2.0 - Faults",
+                      "register": 20,
+                      "type": "array",
+                      "$ref": "#/definitions/ALARMS",
+                      "description": "Current system alarm states."
+                  },
+                  "SCADA_comms_error": {
+                      "title": "3.5 - Scada Comms Error",
+                      "register": 35,
+                      "type": "integer",
+                      "$ref": "#/definitions/SCADA_COMMS_ERROR",
+                      "description": "This shows the previous SCADA comms error to occur. It resets to NO ERROR after 60 seconds."
+                  },
+                  "SCADA_framing_error_counter": {
+                      "title": "3.6 - Scada Framing Error Counter",
+                      "register": 36,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "A count of the number of framing errors the SCADA comms has detected since last power cycle."
+                  },
+                  "SCADA_CRC_error_counter": {
+                      "title": "3.7 - Scada Crc Error Counter",
+                      "register": 37,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "A count of the number of Modbus CRC errors the SCADA comms has detected since last power cycle."
+                  },
+                  "total_modbus_packets_rcvd": {
+                      "title": "3.8 - Total Modbus Packets Rcvd",
+                      "register": 38,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "A count of the number of valid Modbus packets received since last power cycle. Note that this number will overflow to 0."
+                  },
+                  "full_speed_level_units": {
+                      "title": "11.25 - Full Speed Level Units",
+                      "register": 135,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "standby_start_step_units": {
+                      "title": "11.27 - Standby Start Step Units",
+                      "register": 137,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A0_input_fail_units": {
+                      "title": "12.3 - A0 Input Fail Units",
+                      "register": 123,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A1_input_fail_units": {
+                      "title": "12.10 - A1 Input Fail Units",
+                      "register": 130,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A2_input_fail_units": {
+                      "title": "12.17 - A2 Input Fail Units",
+                      "register": 137,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A3_input_fail_units": {
+                      "title": "12.24 - A3 Input Fail Units",
+                      "register": 144,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A4_input_fail_units": {
+                      "title": "12.31 - A4 Input Fail Units",
+                      "register": 151,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A5_input_fail_units": {
+                      "title": "12.38 - A5 Input Fail Units",
+                      "register": 158,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_0_units": {
+                      "title": "13.25 - Bms Analog 0 Units",
+                      "register": 155,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_1_units": {
+                      "title": "13.29 - Bms Analog 1 Units",
+                      "register": 159,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_2_units": {
+                      "title": "13.33 - Bms Analog 2 Units",
+                      "register": 163,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_3_units": {
+                      "title": "13.37 - Bms Analog 3 Units",
+                      "register": 167,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_4_units": {
+                      "title": "13.41 - Bms Analog 4 Units",
+                      "register": 171,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pipe_fill_threshold_units": {
+                      "title": "15.2 - Pipe Fill Threshold Units",
+                      "register": 152,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_min_error_units": {
+                      "title": "15.11 - Stage Min Error Units",
+                      "register": 161,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_min_error_units": {
+                      "title": "15.18 - Destage Min Error Units",
+                      "register": 168,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_assist_feedback_units": {
+                      "title": "15.30 - Sleep Assist Feedback Units",
+                      "register": 180,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "wake_up_feedback_units": {
+                      "title": "15.36 - Wake Up Feedback Units",
+                      "register": 186,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "top_up_start_units": {
+                      "title": "17.16 - Top Up Start Units",
+                      "register": 186,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "top_up_stop_units": {
+                      "title": "17.19 - Top Up Stop Units",
+                      "register": 189,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_units": {
+                      "title": "18.5 - Alarm 0 Units",
+                      "register": 185,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_units": {
+                      "title": "19.5 - Alarm 1 Units",
+                      "register": 195,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  }
+              },
+              "definitions": {
+                  "SYSTEM_STATE": {
+                      "type": "integer",
+                      "enum": [
+                          0,
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6,
+                          7
+                      ],
+                      "enumNames": [
+                          "DISABLED",
+                          "INITIALISATION",
+                          "INITIAL STATE",
+                          "NORMAL MODE",
+                          "LOCKOUT",
+                          "FACTORY MODE",
+                          "RESET",
+                          "PC CONNECT MODE"
+                      ]
+                  },
+                  "INPUT_STATES": {
+                      "uniqueItems": true,
+                      "items": {
+                          "type": "integer",
+                          "enum": [
+                              0,
+                              1,
+                              2,
+                              3,
+                              4,
+                              5,
+                              6,
+                              7
+                          ],
+                          "enumNames": [
+                              "Input 1",
+                              "Input 2",
+                              "Input 3",
+                              "Input 4",
+                              "Input 5",
+                              "Input 6",
+                              "Input 7",
+                              "Input 8"
+                          ]
+                      }
+                  },
+                  "PUMP_STATE": {
+                      "type": "integer",
+                      "enum": [
+                          0,
+                          1
+                      ],
+                      "enumNames": [
+                          "Pump off",
+                          "Pump on"
+                      ]
+                  },
+                  "ALARMS": {
+                      "uniqueItems": true,
+                      "items": {
+                          "type": "integer",
+                          "enum": [
+                              0,
+                              1,
+                              2,
+                              3,
+                              4,
+                              5,
+                              6,
+                              7,
+                              8,
+                              9,
+                              10,
+                              11
+                          ],
+                          "enumNames": [
+                              "Alarm output",
+                              "Low pressure",
+                              "High level",
+                              "Low level",
+                              "Load settings fail",
+                              "Pump Contact",
+                              "Conductivity Input",
+                              "Pump 1 lockout",
+                              "Pump 2 lockout",
+                              "Pump 1 alarm",
+                              "Pump 2 alarm",
+                              "System Lockout"
+                          ]
+                      }
+                  },
+                  "SCADA_COMMS_ERROR": {
+                      "type": "integer",
+                      "enum": [
+                          0,
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6,
+                          7,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          65535
+                      ],
+                      "enumNames": [
+                          "NO_ERROR",
+                          "UART_ERROR",
+                          "RX_TIMING_ERROR",
+                          "RX_OVERFLOW_ERROR",
+                          "CRC_ERROR",
+                          "INCORRECT_SLAVE_ERROR",
+                          "ILLEGAL_FUNCTION_ERROR",
+                          "ILLEGAL_DATA_ADDR_ERROR",
+                          "ILLEGAL_DATA_VALUE_ERROR",
+                          "SLAVE_DEVICE_FAILURE_ERROR",
+                          "UNKNOWN_EXCEPTION_ERROR",
+                          "RESPONSE_TIMEOUT_ERROR",
+                          "BAD_RESPONSE_ERROR",
+                          "COMMS_ERROR_END",
+                          "ERROR_SHORT"
+                      ]
+                  }
+              }
+          },
+          "settings": {
+              "title": "HydroTOUCH Settings",
+              "type": "object",
+              "backup": true,
+              "group": "Controller",
+              "properties": {
+                  "system_mode": {
+                      "title": "9.0 - System Mode",
+                      "register": 90,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_1_manual_en": {
+                      "title": "9.1 - Pump 1 Manual En",
+                      "register": 91,
+                      "type": "boolean"
+                  },
+                  "pump_2_manual_en": {
+                      "title": "9.2 - Pump 2 Manual En",
+                      "register": 92,
+                      "type": "boolean"
+                  },
+                  "pump_3_manual_en": {
+                      "title": "9.3 - Pump 3 Manual En",
+                      "register": 93,
+                      "type": "boolean"
+                  },
+                  "pump_4_manual_en": {
+                      "title": "9.4 - Pump 4 Manual En",
+                      "register": 94,
+                      "type": "boolean"
+                  },
+                  "pump_5_manual_en": {
+                      "title": "9.5 - Pump 5 Manual En",
+                      "register": 95,
+                      "type": "boolean"
+                  },
+                  "pump_6_manual_en": {
+                      "title": "9.6 - Pump 6 Manual En",
+                      "register": 96,
+                      "type": "boolean"
+                  },
+                  "pump_7_manual_en": {
+                      "title": "9.7 - Pump 7 Manual En",
+                      "register": 97,
+                      "type": "boolean"
+                  },
+                  "pump_8_manual_en": {
+                      "title": "9.8 - Pump 8 Manual En",
+                      "register": 98,
+                      "type": "boolean"
+                  },
+                  "pump_9_manual_en": {
+                      "title": "9.9 - Pump 9 Manual En",
+                      "register": 99,
+                      "type": "boolean"
+                  },
+                  "pump_10_manual_en": {
+                      "title": "9.10 - Pump 10 Manual En",
+                      "register": 100,
+                      "type": "boolean"
+                  },
+                  "pump_11_manual_en": {
+                      "title": "9.11 - Pump 11 Manual En",
+                      "register": 101,
+                      "type": "boolean"
+                  },
+                  "pump_12_manual_en": {
+                      "title": "9.12 - Pump 12 Manual En",
+                      "register": 102,
+                      "type": "boolean"
+                  },
+                  "system_powerup_delay": {
+                      "title": "10.0 - System Powerup Delay [Secs]",
+                      "register": 100,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535,
+                      "description": "The delay upon power on after which the system operation commences."
+                  },
+                  "system_type": {
+                      "title": "10.1 - System Type",
+                      "register": 101,
+                      "type": "integer",
+                      "$ref": "#/definitions/SYSTEM_TYPE",
+                      "description": "The primary feedback type of the system"
+                  },
+                  "control_input_type": {
+                      "title": "10.2 - Control Input Type",
+                      "register": 102,
+                      "type": "integer",
+                      "$ref": "#/definitions/CONTROL_INPUT_TYPE"
+                  },
+                  "control_output_type": {
+                      "title": "10.3 - Control Output Type",
+                      "register": 103,
+                      "type": "integer",
+                      "$ref": "#/definitions/CONTROL_OUTPUT_TYPE"
+                  },
+                  "control_direction": {
+                      "title": "10.4 - Control Direction",
+                      "register": 104,
+                      "type": "integer",
+                      "$ref": "#/definitions/CONTROL_DIRECTION"
+                  },
+                  "system_enable": {
+                      "title": "10.5 - System Enable",
+                      "register": 105,
+                      "type": "boolean"
+                  },
+                  "system_enable_input": {
+                      "title": "10.6 - System Enable Input",
+                      "register": 106,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "enable_system_manual_option": {
+                      "title": "10.7 - Enable System Manual Option",
+                      "register": 107,
+                      "type": "boolean"
+                  },
+                  "system_manual_enable_input": {
+                      "title": "10.8 - System Manual Enable Input",
+                      "register": 108,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "siren_mute_input": {
+                      "title": "10.9 - Siren Mute Input",
+                      "register": 109,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "alarm_control_override": {
+                      "title": "10.10 - Alarm Control Override",
+                      "register": 110,
+                      "type": "boolean"
+                  },
+                  "PID_proportional": {
+                      "title": "10.11 - Pid Proportional",
+                      "register": 111,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "PID_integral": {
+                      "title": "10.12 - Pid Integral",
+                      "register": 112,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "PID_derivative": {
+                      "title": "10.13 - Pid Derivative",
+                      "register": 113,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "number_of_pumps": {
+                      "title": "11.0 - Number Of Pumps",
+                      "register": 110,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12,
+                      "description": "The number of main pumps the system has installed"
+                  },
+                  "pump_limit": {
+                      "title": "11.1 - Pump Limit",
+                      "register": 111,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12,
+                      "description": "The maximum number of main pumps that can be run at one time"
+                  },
+                  "pump_limit_include _aux": {
+                      "title": "11.2 - Pump Limit Include  Aux",
+                      "register": 112,
+                      "type": "boolean"
+                  },
+                  "staggered_start_delay": {
+                      "title": "11.3 - Staggered Start Delay [Secs]",
+                      "register": 113,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                  },
+                  "staggered_stop_delay": {
+                      "title": "11.4 - Staggered Stop Delay [Secs]",
+                      "register": 114,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                  },
+                  "pump_select_mode": {
+                      "title": "11.5 - Pump Select Mode",
+                      "register": 115,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_SELECT_MODE",
+                      "description": "The algorithm used to select a new pump"
+                  },
+                  "pump_fault_timeout": {
+                      "title": "11.6 - Pump Fault Timeout [Secs]",
+                      "register": 116,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                  },
+                  "pump_drive_model": {
+                      "title": "11.7 - Pump Drive Model",
+                      "register": 117,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "minimum_speed": {
+                      "title": "11.8 - Minimum Speed",
+                      "register": 118,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "maximum_speed": {
+                      "title": "11.9 - Maximum Speed",
+                      "register": 119,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "antiseize_en": {
+                      "title": "11.10 - Antiseize En",
+                      "register": 120,
+                      "type": "boolean"
+                  },
+                  "antiseize_period": {
+                      "title": "11.11 - Antiseize Period [Secs]",
+                      "register": 121,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "antiseize_run_time": {
+                      "title": "11.12 - Antiseize Run Time [Secs]",
+                      "register": 122,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "antiseize_speed": {
+                      "title": "11.13 - Antiseize Speed",
+                      "register": 123,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "duty_change_period": {
+                      "title": "11.14 - Duty Change Period [Secs]",
+                      "register": 124,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "jacking_pump_turn_off": {
+                      "title": "11.15 - Jacking Pump Turn Off",
+                      "register": 125,
+                      "type": "boolean"
+                  },
+                  "jacking_pump_off_delay": {
+                      "title": "11.16 - Jacking Pump Off Delay [Secs]",
+                      "register": 126,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_stop_input": {
+                      "title": "11.17 - Pump Stop Input",
+                      "register": 127,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_1": {
+                      "title": "11.18 - Pump Threshold Input 1",
+                      "register": 128,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_2": {
+                      "title": "11.19 - Pump Threshold Input 2",
+                      "register": 129,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_3": {
+                      "title": "11.20 - Pump Threshold Input 3",
+                      "register": 130,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_4": {
+                      "title": "11.21 - Pump Threshold Input 4",
+                      "register": 131,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_5": {
+                      "title": "11.22 - Pump Threshold Input 5",
+                      "register": 132,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_threshold_input_6": {
+                      "title": "11.23 - Pump Threshold Input 6",
+                      "register": 133,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "full_speed_level": {
+                      "title": "11.24 - Full Speed Level",
+                      "register": 134,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "standby_start_step": {
+                      "title": "11.26 - Standby Start Step",
+                      "register": 136,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_1_type": {
+                      "title": "11.28 - Pump 1 Type",
+                      "register": 138,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_2_type": {
+                      "title": "11.29 - Pump 2 Type",
+                      "register": 139,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_3_type": {
+                      "title": "11.30 - Pump 3 Type",
+                      "register": 140,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_4_type": {
+                      "title": "11.31 - Pump 4 Type",
+                      "register": 141,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_5_type": {
+                      "title": "11.32 - Pump 5 Type",
+                      "register": 142,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_6_type": {
+                      "title": "11.33 - Pump 6 Type",
+                      "register": 143,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_7_type": {
+                      "title": "11.34 - Pump 7 Type",
+                      "register": 144,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_8_type": {
+                      "title": "11.35 - Pump 8 Type",
+                      "register": 145,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_9_type": {
+                      "title": "11.36 - Pump 9 Type",
+                      "register": 146,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_10_type": {
+                      "title": "11.37 - Pump 10 Type",
+                      "register": 147,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_11_type": {
+                      "title": "11.38 - Pump 11 Type",
+                      "register": 148,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_12_type": {
+                      "title": "11.39 - Pump 12 Type",
+                      "register": 149,
+                      "type": "integer",
+                      "$ref": "#/definitions/PUMP_TYPE"
+                  },
+                  "pump_1_enable_input": {
+                      "title": "11.40 - Pump 1 Enable Input",
+                      "register": 150,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_2_enable_input": {
+                      "title": "11.41 - Pump 2 Enable Input",
+                      "register": 151,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_3_enable_input": {
+                      "title": "11.42 - Pump 3 Enable Input",
+                      "register": 152,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_4_enable_input": {
+                      "title": "11.43 - Pump 4 Enable Input",
+                      "register": 153,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_5_enable_input": {
+                      "title": "11.44 - Pump 5 Enable Input",
+                      "register": 154,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_6_enable_input": {
+                      "title": "11.45 - Pump 6 Enable Input",
+                      "register": 155,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_7_enable_input": {
+                      "title": "11.46 - Pump 7 Enable Input",
+                      "register": 156,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_8_enable_input": {
+                      "title": "11.47 - Pump 8 Enable Input",
+                      "register": 157,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_9_enable_input": {
+                      "title": "11.48 - Pump 9 Enable Input",
+                      "register": 158,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_10_enable_input": {
+                      "title": "11.49 - Pump 10 Enable Input",
+                      "register": 159,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_11_enable_input": {
+                      "title": "11.50 - Pump 11 Enable Input",
+                      "register": 160,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_12_enable_input": {
+                      "title": "11.51 - Pump 12 Enable Input",
+                      "register": 161,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_1_fault_input": {
+                      "title": "11.52 - Pump 1 Fault Input",
+                      "register": 162,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_2_fault_input": {
+                      "title": "11.53 - Pump 2 Fault Input",
+                      "register": 163,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_3_fault_input": {
+                      "title": "11.54 - Pump 3 Fault Input",
+                      "register": 164,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_4_fault_input": {
+                      "title": "11.55 - Pump 4 Fault Input",
+                      "register": 165,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_5_fault_input": {
+                      "title": "11.56 - Pump 5 Fault Input",
+                      "register": 166,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_6_fault_input": {
+                      "title": "11.57 - Pump 6 Fault Input",
+                      "register": 167,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_7_fault_input": {
+                      "title": "11.58 - Pump 7 Fault Input",
+                      "register": 168,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_8_fault_input": {
+                      "title": "11.59 - Pump 8 Fault Input",
+                      "register": 169,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_9_fault_input": {
+                      "title": "11.60 - Pump 9 Fault Input",
+                      "register": 170,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_10_fault_input": {
+                      "title": "11.61 - Pump 10 Fault Input",
+                      "register": 171,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_11_fault_input": {
+                      "title": "11.62 - Pump 11 Fault Input",
+                      "register": 172,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_12_fault_input": {
+                      "title": "11.63 - Pump 12 Fault Input",
+                      "register": 173,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_1_running_input": {
+                      "title": "11.64 - Pump 1 Running Input",
+                      "register": 174,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_2_running_input": {
+                      "title": "11.65 - Pump 2 Running Input",
+                      "register": 175,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_3_running_input": {
+                      "title": "11.66 - Pump 3 Running Input",
+                      "register": 176,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_4_running_input": {
+                      "title": "11.67 - Pump 4 Running Input",
+                      "register": 177,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_5_running_input": {
+                      "title": "11.68 - Pump 5 Running Input",
+                      "register": 178,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_6_running_input": {
+                      "title": "11.69 - Pump 6 Running Input",
+                      "register": 179,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_7_running_input": {
+                      "title": "11.70 - Pump 7 Running Input",
+                      "register": 180,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_8_running_input": {
+                      "title": "11.71 - Pump 8 Running Input",
+                      "register": 181,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_9_running_input": {
+                      "title": "11.72 - Pump 9 Running Input",
+                      "register": 182,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_10_running_input": {
+                      "title": "11.73 - Pump 10 Running Input",
+                      "register": 183,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_11_running_input": {
+                      "title": "11.74 - Pump 11 Running Input",
+                      "register": 184,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "pump_12_running_input": {
+                      "title": "11.75 - Pump 12 Running Input",
+                      "register": 185,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "manual_enable_input": {
+                      "title": "11.76 - Manual Enable Input",
+                      "register": 186,
+                      "type": "integer",
+                      "$ref": "#/definitions/INPUT_ASSIGN"
+                  },
+                  "manual_speed_source": {
+                      "title": "11.77 - Manual Speed Source",
+                      "register": 187,
+                      "type": "integer",
+                      "$ref": "#/definitions/MAN_SPEED_SOURCE"
+                  },
+                  "manual_mode_timeout": {
+                      "title": "11.78 - Manual Mode Timeout [Secs]",
+                      "register": 188,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_1_manual_speed": {
+                      "title": "11.79 - Pump 1 Manual Speed",
+                      "register": 189,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_2_manual_speed": {
+                      "title": "11.80 - Pump 2 Manual Speed",
+                      "register": 190,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_3_manual_speed": {
+                      "title": "11.81 - Pump 3 Manual Speed",
+                      "register": 191,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_4_manual_speed": {
+                      "title": "11.82 - Pump 4 Manual Speed",
+                      "register": 192,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_5_manual_speed": {
+                      "title": "11.83 - Pump 5 Manual Speed",
+                      "register": 193,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_6_manual_speed": {
+                      "title": "11.84 - Pump 6 Manual Speed",
+                      "register": 194,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_7_manual_speed": {
+                      "title": "11.85 - Pump 7 Manual Speed",
+                      "register": 195,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_8_manual_speed": {
+                      "title": "11.86 - Pump 8 Manual Speed",
+                      "register": 196,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_9_manual_speed": {
+                      "title": "11.87 - Pump 9 Manual Speed",
+                      "register": 197,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_10_manual_speed": {
+                      "title": "11.88 - Pump 10 Manual Speed",
+                      "register": 198,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_11_manual_speed": {
+                      "title": "11.89 - Pump 11 Manual Speed",
+                      "register": 199,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pump_12_manual_speed": {
+                      "title": "11.90 - Pump 12 Manual Speed",
+                      "register": 200,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A0_input_type": {
+                      "title": "12.0 - A0 Input Type",
+                      "register": 120,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A0_offset": {
+                      "title": "12.1 - A0 Offset",
+                      "register": 121,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A0_input_fail_threshold": {
+                      "title": "12.2 - A0 Input Fail Threshold",
+                      "register": 122,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A0_input_fault_delay": {
+                      "title": "12.4 - A0 Input Fault Delay",
+                      "register": 124,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A0_input_fault_auto_reset": {
+                      "title": "12.5 - A0 Input Fault Auto Reset",
+                      "register": 125,
+                      "type": "boolean"
+                  },
+                  "A0_input_fault_reset_delay": {
+                      "title": "12.6 - A0 Input Fault Reset Delay",
+                      "register": 126,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A1_input_type": {
+                      "title": "12.7 - A1 Input Type",
+                      "register": 127,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A1_offset": {
+                      "title": "12.8 - A1 Offset",
+                      "register": 128,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A1_input_fail_threshold": {
+                      "title": "12.9 - A1 Input Fail Threshold",
+                      "register": 129,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A1_input_fault_delay": {
+                      "title": "12.11 - A1 Input Fault Delay",
+                      "register": 131,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A1_input_fault_auto_reset": {
+                      "title": "12.12 - A1 Input Fault Auto Reset",
+                      "register": 132,
+                      "type": "boolean"
+                  },
+                  "A1_input_fault_reset_delay": {
+                      "title": "12.13 - A1 Input Fault Reset Delay",
+                      "register": 133,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A2_input_type": {
+                      "title": "12.14 - A2 Input Type",
+                      "register": 134,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A2_offset": {
+                      "title": "12.15 - A2 Offset",
+                      "register": 135,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A2_input_fail_threshold": {
+                      "title": "12.16 - A2 Input Fail Threshold",
+                      "register": 136,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A2_input_fault_delay": {
+                      "title": "12.18 - A2 Input Fault Delay",
+                      "register": 138,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A2_input_fault_auto_reset": {
+                      "title": "12.19 - A2 Input Fault Auto Reset",
+                      "register": 139,
+                      "type": "boolean"
+                  },
+                  "A2_input_fault_reset_delay": {
+                      "title": "12.20 - A2 Input Fault Reset Delay",
+                      "register": 140,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A3_input_type": {
+                      "title": "12.21 - A3 Input Type",
+                      "register": 141,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A3_offset": {
+                      "title": "12.22 - A3 Offset",
+                      "register": 142,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A3_input_fail_threshold": {
+                      "title": "12.23 - A3 Input Fail Threshold",
+                      "register": 143,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A3_input_fault_delay": {
+                      "title": "12.25 - A3 Input Fault Delay",
+                      "register": 145,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A3_input_fault_auto_reset": {
+                      "title": "12.26 - A3 Input Fault Auto Reset",
+                      "register": 146,
+                      "type": "boolean"
+                  },
+                  "A3_input_fault_reset_delay": {
+                      "title": "12.27 - A3 Input Fault Reset Delay",
+                      "register": 147,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A4_input_type": {
+                      "title": "12.28 - A4 Input Type",
+                      "register": 148,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A4_offset": {
+                      "title": "12.29 - A4 Offset",
+                      "register": 149,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A4_input_fail_threshold": {
+                      "title": "12.30 - A4 Input Fail Threshold",
+                      "register": 150,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A4_input_fault_delay": {
+                      "title": "12.32 - A4 Input Fault Delay",
+                      "register": 152,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A4_input_fault_auto_reset": {
+                      "title": "12.33 - A4 Input Fault Auto Reset",
+                      "register": 153,
+                      "type": "boolean"
+                  },
+                  "A4_input_fault_reset_delay": {
+                      "title": "12.34 - A4 Input Fault Reset Delay",
+                      "register": 154,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A5_input_type": {
+                      "title": "12.35 - A5 Input Type",
+                      "register": 155,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_TYPE"
+                  },
+                  "A5_offset": {
+                      "title": "12.36 - A5 Offset",
+                      "register": 156,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A5_input_fail_threshold": {
+                      "title": "12.37 - A5 Input Fail Threshold",
+                      "register": 157,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A5_input_fault_delay": {
+                      "title": "12.39 - A5 Input Fault Delay",
+                      "register": 159,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A5_input_fault_auto_reset": {
+                      "title": "12.40 - A5 Input Fault Auto Reset",
+                      "register": 160,
+                      "type": "boolean"
+                  },
+                  "A5_input_fault_reset_delay": {
+                      "title": "12.41 - A5 Input Fault Reset Delay",
+                      "register": 161,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "C0_output_assign": {
+                      "title": "13.1 - C0 Output Assign",
+                      "register": 131,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C1_output_assign": {
+                      "title": "13.2 - C1 Output Assign",
+                      "register": 132,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C2_output_assign": {
+                      "title": "13.3 - C2 Output Assign",
+                      "register": 133,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C3_output_assign": {
+                      "title": "13.4 - C3 Output Assign",
+                      "register": 134,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C4_output_assign": {
+                      "title": "13.5 - C4 Output Assign",
+                      "register": 135,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C5_output_assign": {
+                      "title": "13.6 - C5 Output Assign",
+                      "register": 136,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C6_output_assign": {
+                      "title": "13.7 - C6 Output Assign",
+                      "register": 137,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C7_output_assign": {
+                      "title": "13.8 - C7 Output Assign",
+                      "register": 138,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C8_output_assign": {
+                      "title": "13.9 - C8 Output Assign",
+                      "register": 139,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C9_output_assign": {
+                      "title": "13.10 - C9 Output Assign",
+                      "register": 140,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "C_output_control": {
+                      "title": "13.11 - C Output Control",
+                      "register": 141,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A10_output_assign": {
+                      "title": "13.12 - A10 Output Assign",
+                      "register": 142,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_OUTPUT_ASSIGN"
+                  },
+                  "A11_output_assign": {
+                      "title": "13.13 - A11 Output Assign",
+                      "register": 143,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_OUTPUT_ASSIGN"
+                  },
+                  "A10_output_control": {
+                      "title": "13.14 - A10 Output Control",
+                      "register": 144,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "A11_output_control": {
+                      "title": "13.15 - A11 Output Control",
+                      "register": 145,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "F0_output_assign": {
+                      "title": "13.16 - F0 Output Assign",
+                      "register": 146,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F1_output_assign": {
+                      "title": "13.17 - F1 Output Assign",
+                      "register": 147,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F2_output_assign": {
+                      "title": "13.18 - F2 Output Assign",
+                      "register": 148,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F3_output_assign": {
+                      "title": "13.19 - F3 Output Assign",
+                      "register": 149,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F4_output_assign": {
+                      "title": "13.20 - F4 Output Assign",
+                      "register": 150,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F5_output_assign": {
+                      "title": "13.21 - F5 Output Assign",
+                      "register": 151,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "F6_output_assign": {
+                      "title": "13.22 - F6 Output Assign",
+                      "register": 152,
+                      "type": "integer",
+                      "$ref": "#/definitions/OUTPUT_ASSIGN"
+                  },
+                  "BMS_analog_0_channel_assign": {
+                      "title": "13.23 - Bms Analog 0 Channel Assign",
+                      "register": 153,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_CHANNEL_ASSIGN"
+                  },
+                  "BMS_analog_0_threshold": {
+                      "title": "13.24 - Bms Analog 0 Threshold",
+                      "register": 154,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_0_direction": {
+                      "title": "13.26 - Bms Analog 0 Direction",
+                      "register": 156,
+                      "type": "integer"
+                  },
+                  "BMS_analog_1_channel_assign": {
+                      "title": "13.27 - Bms Analog 1 Channel Assign",
+                      "register": 157,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_CHANNEL_ASSIGN"
+                  },
+                  "BMS_analog_1_threshold": {
+                      "title": "13.28 - Bms Analog 1 Threshold",
+                      "register": 158,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_1_direction": {
+                      "title": "13.30 - Bms Analog 1 Direction",
+                      "register": 160,
+                      "type": "integer"
+                  },
+                  "BMS_analog_2_channel_assign": {
+                      "title": "13.31 - Bms Analog 2 Channel Assign",
+                      "register": 161,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_CHANNEL_ASSIGN"
+                  },
+                  "BMS_analog_2_threshold": {
+                      "title": "13.32 - Bms Analog 2 Threshold",
+                      "register": 162,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_2_direction": {
+                      "title": "13.34 - Bms Analog 2 Direction",
+                      "register": 164,
+                      "type": "integer"
+                  },
+                  "BMS_analog_3_channel_assign": {
+                      "title": "13.35 - Bms Analog 3 Channel Assign",
+                      "register": 165,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_CHANNEL_ASSIGN"
+                  },
+                  "BMS_analog_3_threshold": {
+                      "title": "13.36 - Bms Analog 3 Threshold",
+                      "register": 166,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_3_direction": {
+                      "title": "13.38 - Bms Analog 3 Direction",
+                      "register": 168,
+                      "type": "integer"
+                  },
+                  "BMS_analog_4_channel_assign": {
+                      "title": "13.39 - Bms Analog 4 Channel Assign",
+                      "register": 169,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_CHANNEL_ASSIGN"
+                  },
+                  "BMS_analog_4_threshold": {
+                      "title": "13.40 - Bms Analog 4 Threshold",
+                      "register": 170,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "BMS_analog_4_direction": {
+                      "title": "13.42 - Bms Analog 4 Direction",
+                      "register": 172,
+                      "type": "integer"
+                  },
+                  "primary_feedback_assign": {
+                      "title": "14.0 - Primary Feedback Assign",
+                      "register": 140,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_ASSIGN"
+                  },
+                  "backup_feedback_assign": {
+                      "title": "14.1 - Backup Feedback Assign",
+                      "register": 141,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_ASSIGN"
+                  },
+                  "no_feedback_lockout": {
+                      "title": "14.2 - No Feedback Lockout",
+                      "register": 142,
+                      "type": "boolean"
+                  },
+                  "aux_0_assign": {
+                      "title": "14.3 - Aux 0 Assign",
+                      "register": 143,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_ASSIGN"
+                  },
+                  "aux_1_assign": {
+                      "title": "14.4 - Aux 1 Assign",
+                      "register": 144,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_ASSIGN"
+                  },
+                  "aux_2_assign": {
+                      "title": "14.5 - Aux 2 Assign",
+                      "register": 145,
+                      "type": "integer",
+                      "$ref": "#/definitions/A_INPUT_ASSIGN"
+                  },
+                  "feedback_range": {
+                      "title": "14.6 - Feedback Range",
+                      "register": 146,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "backup_range": {
+                      "title": "14.7 - Backup Range",
+                      "register": 147,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_0_range": {
+                      "title": "14.8 - Aux 0 Range",
+                      "register": 148,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_1_range": {
+                      "title": "14.9 - Aux 1 Range",
+                      "register": 149,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_2_range": {
+                      "title": "14.10 - Aux 2 Range",
+                      "register": 150,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "feedback_units": {
+                      "title": "14.11 - Feedback Units",
+                      "register": 151,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_0_units": {
+                      "title": "14.12 - Aux 0 Units",
+                      "register": 152,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_1_units": {
+                      "title": "14.13 - Aux 1 Units",
+                      "register": 153,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "aux_2_units": {
+                      "title": "14.14 - Aux 2 Units",
+                      "register": 154,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_0": {
+                      "title": "14.15 - Setpoint 0",
+                      "register": 155,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_1": {
+                      "title": "14.16 - Setpoint 1",
+                      "register": 156,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_2": {
+                      "title": "14.17 - Setpoint 2",
+                      "register": 157,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_3": {
+                      "title": "14.18 - Setpoint 3",
+                      "register": 158,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_4": {
+                      "title": "14.19 - Setpoint 4",
+                      "register": 159,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_select": {
+                      "title": "14.20 - Setpoint Select",
+                      "register": 160,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_0_input": {
+                      "title": "14.21 - Setpoint 0 Input",
+                      "register": 161,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_0_input_polarity": {
+                      "title": "14.22 - Setpoint 0 Input Polarity",
+                      "register": 162,
+                      "type": "boolean"
+                  },
+                  "setpoint_1_input": {
+                      "title": "14.23 - Setpoint 1 Input",
+                      "register": 163,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_1_input_polarity": {
+                      "title": "14.24 - Setpoint 1 Input Polarity",
+                      "register": 164,
+                      "type": "boolean"
+                  },
+                  "setpoint_2_input": {
+                      "title": "14.25 - Setpoint 2 Input",
+                      "register": 165,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_2_input_polarity": {
+                      "title": "14.26 - Setpoint 2 Input Polarity",
+                      "register": 166,
+                      "type": "boolean"
+                  },
+                  "setpoint_3_input": {
+                      "title": "14.27 - Setpoint 3 Input",
+                      "register": 167,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_3_input_polarity": {
+                      "title": "14.28 - Setpoint 3 Input Polarity",
+                      "register": 168,
+                      "type": "boolean"
+                  },
+                  "setpoint_4_input": {
+                      "title": "14.29 - Setpoint 4 Input",
+                      "register": 169,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_4_input_polarity": {
+                      "title": "14.30 - Setpoint 4 Input Polarity",
+                      "register": 170,
+                      "type": "boolean"
+                  },
+                  "pipe_fill_en": {
+                      "title": "15.0 - Pipe Fill En",
+                      "register": 150,
+                      "type": "boolean"
+                  },
+                  "pipe_fill_relative_threshold": {
+                      "title": "15.1 - Pipe Fill Relative Threshold",
+                      "register": 151,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pipe_fill_speed": {
+                      "title": "15.3 - Pipe Fill Speed",
+                      "register": 153,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "pipe_fill_fail_timeout": {
+                      "title": "15.4 - Pipe Fill Fail Timeout",
+                      "register": 154,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "setpoint_ramp_en": {
+                      "title": "15.5 - Setpoint Ramp En",
+                      "register": 155,
+                      "type": "boolean"
+                  },
+                  "setpoint_ramp_rate": {
+                      "title": "15.6 - Setpoint Ramp Rate",
+                      "register": 156,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "maintain_min_level_en": {
+                      "title": "15.7 - Maintain Min Level En",
+                      "register": 157,
+                      "type": "boolean"
+                  },
+                  "maintain_min_level_delay": {
+                      "title": "15.8 - Maintain Min Level Delay",
+                      "register": 158,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_threshold_speed": {
+                      "title": "15.9 - Stage Threshold Speed",
+                      "register": 159,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_min_error": {
+                      "title": "15.10 - Stage Min Error",
+                      "register": 160,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_trigger_delay": {
+                      "title": "15.12 - Stage Trigger Delay",
+                      "register": 162,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_bypass_en": {
+                      "title": "15.13 - Stage Bypass En",
+                      "register": 163,
+                      "type": "boolean"
+                  },
+                  "stage_bypass_speed": {
+                      "title": "15.14 - Stage Bypass Speed",
+                      "register": 164,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "stage_bypass_period": {
+                      "title": "15.15 - Stage Bypass Period",
+                      "register": 165,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_threshold_speed": {
+                      "title": "15.16 - Destage Threshold Speed",
+                      "register": 166,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_min_error": {
+                      "title": "15.17 - Destage Min Error",
+                      "register": 167,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_trigger_delay": {
+                      "title": "15.19 - Destage Trigger Delay",
+                      "register": 169,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_bypass_en": {
+                      "title": "15.20 - Destage Bypass En",
+                      "register": 170,
+                      "type": "boolean"
+                  },
+                  "destage_bypass_speed": {
+                      "title": "15.21 - Destage Bypass Speed",
+                      "register": 171,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "destage_bypass_period": {
+                      "title": "15.22 - Destage Bypass Period",
+                      "register": 172,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "bumpless_transfer_delay": {
+                      "title": "15.23 - Bumpless Transfer Delay",
+                      "register": 173,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "no_demand_speed": {
+                      "title": "15.24 - No Demand Speed",
+                      "register": 174,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "no_demand_sleep_delay": {
+                      "title": "15.25 - No Demand Sleep Delay",
+                      "register": 175,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_assist_mode": {
+                      "title": "15.26 - Sleep Assist Mode",
+                      "register": 176,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_assist_delay": {
+                      "title": "15.27 - Sleep Assist Delay",
+                      "register": 177,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_assist_speed_tolerance": {
+                      "title": "15.28 - Sleep Assist Speed Tolerance",
+                      "register": 178,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_assist_feedback_tolerance": {
+                      "title": "15.29 - Sleep Assist Feedback Tolerance",
+                      "register": 179,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "speed_minimise_rate": {
+                      "title": "15.31 - Speed Minimise Rate",
+                      "register": 181,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_boost_pressure_increase": {
+                      "title": "15.32 - Sleep Boost Pressure Increase",
+                      "register": 182,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_boost_timeout": {
+                      "title": "15.33 - Sleep Boost Timeout",
+                      "register": 183,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "sleep_speed": {
+                      "title": "15.34 - Sleep Speed",
+                      "register": 184,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "wakeup_feedback_change": {
+                      "title": "15.35 - Wakeup Feedback Change",
+                      "register": 185,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "wakeup_delay": {
+                      "title": "15.37 - Wakeup Delay",
+                      "register": 187,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "wakeup_duty_change_en": {
+                      "title": "15.38 - Wakeup Duty Change En",
+                      "register": 188,
+                      "type": "boolean"
+                  },
+                  "SCADA_baud_rate": {
+                      "title": "16.0 - Scada Baud Rate",
+                      "register": 160,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_parity": {
+                      "title": "16.1 - Scada Parity",
+                      "register": 161,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_slave_address": {
+                      "title": "16.2 - Scada Slave Address",
+                      "register": 162,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_watchdog_en": {
+                      "title": "16.3 - Scada Watchdog En",
+                      "register": 163,
+                      "type": "boolean"
+                  },
+                  "SCADA_watchdog_period": {
+                      "title": "16.4 - Scada Watchdog Period",
+                      "register": 164,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_watchdog_fault_mode": {
+                      "title": "16.5 - Scada Watchdog Fault Mode",
+                      "register": 165,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_remote_control_mode": {
+                      "title": "16.6 - Scada Remote Control Mode",
+                      "register": 166,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "SCADA_watchdog_remote_override": {
+                      "title": "16.7 - Scada Watchdog Remote Override",
+                      "register": 167,
+                      "type": "boolean"
+                  },
+                  "Drive_baud_rate": {
+                      "title": "16.8 - Drive Baud Rate",
+                      "register": 168,
+                      "type": "integer"
+                  },
+                  "Drive_parity": {
+                      "title": "16.9 - Drive Parity",
+                      "register": 169,
+                      "type": "integer"
+                  },
+                  "HMI_IP_0": {
+                      "title": "16.10 - Hmi Ip 0",
+                      "register": 170,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "HMI_IP_1": {
+                      "title": "16.11 - Hmi Ip 1",
+                      "register": 171,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "HMI_SUBNET_MASK_0": {
+                      "title": "16.12 - Hmi Subnet Mask 0",
+                      "register": 172,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "HMI_SUBNET_MASK_1": {
+                      "title": "16.13 - Hmi Subnet Mask 1",
+                      "register": 173,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_run_time": {
+                      "title": "17.0 - Mixer Run Time",
+                      "register": 170,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_turn_off": {
+                      "title": "17.1 - Mixer Turn Off",
+                      "register": 171,
+                      "type": "boolean"
+                  },
+                  "mixer_off_delay": {
+                      "title": "17.2 - Mixer Off Delay",
+                      "register": 172,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_cycle_mode": {
+                      "title": "17.3 - Mixer Cycle Mode",
+                      "register": 173,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_cycle_frequency": {
+                      "title": "17.4 - Mixer Cycle Frequency",
+                      "register": 174,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_mode_level": {
+                      "title": "17.5 - Mixer Mode Level",
+                      "register": 175,
+                      "type": "boolean"
+                  },
+                  "mixer_start_level": {
+                      "title": "17.6 - Mixer Start Level",
+                      "register": 176,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_stop_level": {
+                      "title": "17.7 - Mixer Stop Level",
+                      "register": 177,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "mixer_speed": {
+                      "title": "17.8 - Mixer Speed",
+                      "register": 178,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "well_wash_en": {
+                      "title": "17.9 - Well Wash En",
+                      "register": 179,
+                      "type": "boolean"
+                  },
+                  "well_wash_duration": {
+                      "title": "17.10 - Well Wash Duration",
+                      "register": 180,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "well_wash_cycle_frequency": {
+                      "title": "17.11 - Well Wash Cycle Frequency",
+                      "register": 181,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "well_wash_pump_run_mode": {
+                      "title": "17.12 - Well Wash Pump Run Mode",
+                      "register": 182,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "well_wash_turn_off": {
+                      "title": "17.13 - Well Wash Turn Off",
+                      "register": 183,
+                      "type": "boolean"
+                  },
+                  "top_up_control_en": {
+                      "title": "17.14 - Top Up Control En",
+                      "register": 184,
+                      "type": "boolean"
+                  },
+                  "top_up_start_threshold": {
+                      "title": "17.15 - Top Up Start Threshold",
+                      "register": 185,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "top_up_start_delay": {
+                      "title": "17.17 - Top Up Start Delay",
+                      "register": 187,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "top_up_stop_threshold": {
+                      "title": "17.18 - Top Up Stop Threshold",
+                      "register": 188,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "top_up_stop_delay": {
+                      "title": "17.20 - Top Up Stop Delay",
+                      "register": 190,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_fault_mode": {
+                      "title": "18.0 - Alarm 0 Fault Mode",
+                      "register": 180,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_discrete_input": {
+                      "title": "18.1 - Alarm 0 Discrete Input",
+                      "register": 181,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_discrete_polarity": {
+                      "title": "18.6 - Alarm 0 Discrete Polarity",
+                      "register": 186,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_analog_channel": {
+                      "title": "18.3 - Alarm 0 Analog Channel",
+                      "register": 183,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_threshold": {
+                      "title": "18.4 - Alarm 0 Threshold",
+                      "register": 184,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_analog_direction": {
+                      "title": "18.7 - Alarm 0 Analog Direction",
+                      "register": 187,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_trigger_delay": {
+                      "title": "18.8 - Alarm 0 Trigger Delay",
+                      "register": 188,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_auto_reset": {
+                      "title": "18.9 - Alarm 0 Auto Reset",
+                      "register": 189,
+                      "type": "boolean"
+                  },
+                  "alarm_0_reset_hysteresis": {
+                      "title": "18.10 - Alarm 0 Reset Hysteresis",
+                      "register": 190,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_reset_delay": {
+                      "title": "18.11 - Alarm 0 Reset Delay",
+                      "register": 191,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_0_name": {
+                      "title": "18.12 - Alarm 0 Name",
+                      "register": 192,
+                      "type": "string",
+                      "maxLength": 2
+                  },
+                  "alarm_0_activation_text": {
+                      "title": "18.62 - Alarm 0 Activation Text",
+                      "register": 242,
+                      "type": "string",
+                      "maxLength": 2
+                  },
+                  "alarm_0_reset_text": {
+                      "title": "18.72 - Alarm 0 Reset Text",
+                      "register": 252,
+                      "type": "string",
+                      "maxLength": 2
+                  },
+                  "alarm_1_fault_mode": {
+                      "title": "19.0 - Alarm 1 Fault Mode",
+                      "register": 190,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_discrete_input": {
+                      "title": "19.1 - Alarm 1 Discrete Input",
+                      "register": 191,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_discrete_polarity": {
+                      "title": "19.6 - Alarm 1 Discrete Polarity",
+                      "register": 196,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_analog_channel": {
+                      "title": "19.3 - Alarm 1 Analog Channel",
+                      "register": 193,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_threshold": {
+                      "title": "19.4 - Alarm 1 Threshold",
+                      "register": 194,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_analog_direction": {
+                      "title": "19.7 - Alarm 1 Analog Direction",
+                      "register": 197,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_trigger_delay": {
+                      "title": "19.8 - Alarm 1 Trigger Delay",
+                      "register": 198,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_auto_reset": {
+                      "title": "19.9 - Alarm 1 Auto Reset",
+                      "register": 199,
+                      "type": "boolean"
+                  },
+                  "alarm_1_reset_hysteresis": {
+                      "title": "19.10 - Alarm 1 Reset Hysteresis",
+                      "register": 200,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_reset_delay": {
+                      "title": "19.11 - Alarm 1 Reset Delay",
+                      "register": 201,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "alarm_1_name": {
+                      "title": "19.12 - Alarm 1 Name",
+                      "register": 202,
+                      "type": "string",
+                      "maxLength": 2
+                  },
+                  "alarm_1_activation_text": {
+                      "title": "19.62 - Alarm 1 Activation Text",
+                      "register": 252,
+                      "type": "string",
+                      "maxLength": 2
+                  },
+                  "alarm_1_reset_text": {
+                      "title": "19.72 - Alarm 1 Reset Text",
+                      "register": 262,
+                      "type": "string",
+                      "maxLength": 2
+                  }
+              },
+              "definitions": {
+                  "SYSTEM_TYPE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "CONTROL_INPUT_TYPE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "CONTROL_OUTPUT_TYPE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "CONTROL_DIRECTION": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "INPUT_ASSIGN": {
+                      "type": "integer",
+                      "enum": [
+                          0,
+                          6,
+                          7,
+                          8
+                      ],
+                      "enumNames": [
+                          "UNASSIGNED",
+                          "INPUT 6",
+                          "INPUT 7",
+                          "INPUT 8"
+                      ]
+                  },
+                  "PUMP_SELECT_MODE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "PUMP_TYPE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "MAN_SPEED_SOURCE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "A_INPUT_TYPE": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "OUTPUT_ASSIGN": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "A_OUTPUT_ASSIGN": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "A_CHANNEL_ASSIGN": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  },
+                  "A_INPUT_ASSIGN": {
+                      "type": "integer",
+                      "enum": [],
+                      "enumNames": []
+                  }
+              }
+          },
+          "actions": {
+              "title": "HydroTOUCH Actions",
+              "type": "object",
+              "properties": {
+                  "mute_flag": {
+                      "title": "30.0 - Mute Flag",
+                      "register": 300,
+                      "type": "boolean",
+                      "description": "If set to 1 the siren sound will be muted."
+                  },
+                  "fault_reset": {
+                      "title": "30.1 - Fault Reset",
+                      "register": 301,
+                      "type": "boolean",
+                      "description": "If set to 1 all alarms will be reset."
+                  },
+                  "reset_service_alarm": {
+                      "title": "30.2 - Reset Service Alarm",
+                      "register": 302,
+                      "type": "boolean",
+                      "description": "If set to 1 service alarm timer values (service_alarm_hours. service_alarm_mins and service_alarm_secs values) will be reset to 0."
+                  },
+                  "save_settings": {
+                      "title": "30.3 - Save Settings",
+                      "register": 303,
+                      "type": "boolean",
+                      "description": "If set to 1 all the Non-Volatile settings will be saved in EEPROM."
+                  },
+                  "controller_restart": {
+                      "title": "30.4 - Controller Restart",
+                      "register": 304,
+                      "type": "boolean",
+                      "description": "If set to 1 system will be reset."
+                  },
+                  "factory_reset": {
+                      "title": "30.7 - Factory Reset",
+                      "register": 307,
+                      "type": "boolean",
+                      "description": "Eeprom settings reset and system reset."
+                  }
+              },
+              "definitions": {}
+          },
+          "logs": {
+              "title": "HydroTOUCH Logs",
+              "type": "object",
+              "readOnly": true,
+              "group": "Controller",
+              "properties": {
+                  "power_cycle_count": {
+                      "title": "31.0 - Power Cycle Count",
+                      "register": 310,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the total power on cycles of the controller after loading the firmware"
+                  },
+                  "system_run_secs": {
+                      "title": "31.1 - System Run Secs",
+                      "register": 311,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the seconds field of the total system run time."
+                  },
+                  "system_run_mins": {
+                      "title": "31.2 - System Run Mins",
+                      "register": 312,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the minutes field of the total system run time."
+                  },
+                  "system_run_hours_low": {
+                      "title": "31.3 - System Run Hours Low",
+                      "register": 313,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the hours field of the total system run time (Lower Byte)"
+                  },
+                  "system_run_hours_high": {
+                      "title": "31.4 - System Run Hours High",
+                      "register": 314,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the hours field of the total system run time (Upper Byte)"
+                  },
+                  "service_alarm_secs": {
+                      "title": "31.5 - Service Alarm Secs",
+                      "register": 315,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the seconds field of the Service Alarm."
+                  },
+                  "service_alarm_mins": {
+                      "title": "31.6 - Service Alarm Mins",
+                      "register": 316,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the minutes field of the Service Alarm."
+                  },
+                  "service_alarm_hours": {
+                      "title": "31.7 - Service Alarm Hours",
+                      "register": 317,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the hours field of the Service Alarm."
+                  },
+                  "pump_1_run_secs": {
+                      "title": "32.8 - Pump 1 Run Secs",
+                      "register": 328,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the seconds field of the total Pump 1 run time."
+                  },
+                  "pump_1_run_mins": {
+                      "title": "32.9 - Pump 1 Run Mins",
+                      "register": 329,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the minutes field of the total Pump 1 run time."
+                  },
+                  "pump_1_run_hours": {
+                      "title": "32.10 - Pump 1 Run Hours",
+                      "register": 330,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the hours field of the total Pump 1 run time."
+                  },
+                  "pump_2_run_secs": {
+                      "title": "32.11 - Pump 2 Run Secs",
+                      "register": 331,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the seconds field of the total Pump 2 run time."
+                  },
+                  "pump_2_run_mins": {
+                      "title": "32.12 - Pump 2 Run Mins",
+                      "register": 332,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the minutes field of the total Pump 2 run time."
+                  },
+                  "pump_2_run_hours": {
+                      "title": "32.13 - Pump 2 Run Hours",
+                      "register": 333,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter is the hours field of the total Pump 2 run time."
+                  },
+                  "pump_1_start_count_low": {
+                      "title": "33.14 - Pump 1 Start Count Low",
+                      "register": 344,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the number of times pump 1 is started  (Lower Byte)."
+                  },
+                  "pump_1_start_count_high": {
+                      "title": "33.15 - Pump 1 Start Count High",
+                      "register": 345,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the number of times pump 1 is started  (Upper Byte)."
+                  },
+                  "pump_2_start_count_low": {
+                      "title": "33.16 - Pump 2 Start Count Low",
+                      "register": 346,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the number of times pump 2 is started  (Lower Byte)."
+                  },
+                  "pump_2_start_count_high": {
+                      "title": "33.17 - Pump 2 Start Count High",
+                      "register": 347,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the number of times pump 2 is started (Upper Byte)."
+                  },
+                  "high_level_count": {
+                      "title": "34.18 - High Level Count",
+                      "register": 358,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the total number of times high level fault condition has occurred."
+                  },
+                  "low_level_count": {
+                      "title": "34.19 - Low Level Count",
+                      "register": 359,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the total number of times low level fault condition has occurred."
+                  },
+                  "low_pressure_count": {
+                      "title": "34.20 - Low Pressure Count",
+                      "register": 360,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This parameter indicates the total number of times low pressure fault condition has occurred."
+                  },
+                  "fault_log_0_timestamp": {
+                      "title": "35.0 - Fault Log 0 Timestamp",
+                      "register": 350,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This is a timestamp, in seconds, of this fault log entry"
+                  },
+                  "fault_log_0_alarm": {
+                      "title": "35.1 - Fault Log 0 Alarm",
+                      "register": 351,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535,
+                      "description": "This is the particular fault of this log entry"
+                  },
+                  "fault_log_0_state": {
+                      "title": "35.2 - Fault Log 0 State",
+                      "register": 352,
+                      "type": "boolean",
+                      "description": "This is the state of the fault for this log entry"
+                  },
+                  "log_timestamp_0": {
+                      "title": "36.0 - Log Timestamp 0",
+                      "register": 360,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "variable_0_log_0": {
+                      "title": "37.0 - Variable 0 Log 0",
+                      "register": 370,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "variable_1_log_0": {
+                      "title": "38.0 - Variable 1 Log 0",
+                      "register": 380,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  },
+                  "variable_2_log_0": {
+                      "title": "39.0 - Variable 2 Log 0",
+                      "register": 390,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 65535
+                  }
+              },
+              "definitions": {}
+          }
+      }
+  }
+
 
   const titles = [
     {
@@ -2109,6 +5085,8 @@ export default function Home() {
   const [showDialog, setShowDialog] = useState(false);
 
   const paginationSize = 4;
+
+  const systemStatus = "Running";
 
 
   const { isLoading, isFetching, data, isError, error, refetch } = useQuery(['formData'], () => getFormData(), {
@@ -2357,6 +5335,15 @@ export default function Home() {
 
   const optionSelector = async ({indexValue}) => {
     try{
+
+      //for testing 
+
+      setShowDialog((prev) => {
+        return {
+         show: false
+        }
+      })
+      return true;
       const {selected } = showDialog
       const { journey } = selected;
 
@@ -2387,6 +5374,9 @@ export default function Home() {
   const letUpdate = async () => {
     console.log("I am calling to update the data ");
     console.log("Current Dialogs is ", showDialog);
+
+  refetch();
+  return true;
 
     try{
 
@@ -2420,7 +5410,14 @@ export default function Home() {
 
     }catch(err){
       console.log("Error in let update ", err);
-    }
+    }finally{
+      setShowDialog((prev) => {
+        return {
+          ...prev,
+          show: false
+        }
+    })
+  }
 }
 
 
@@ -2473,8 +5470,9 @@ export default function Home() {
 
 
  const updateFormData = async (data) => {
+ 
   try {
-
+    return {}
     const url = 'http://10.0.0.11:3001/form'
     const response = await axios.put(url, data);
     return response.data;
@@ -2625,10 +5623,10 @@ export default function Home() {
       //  return null;
       //}
 
-      return <div className="columns-1 mx-4">
+      return <div className="mx-4">
         <div 
             key={index} 
-            className="flex flex-row justify-between justify-items-center py-2 mx-10 border-b border-gray-200"
+            className="flex flex-row justify-between justify-items-center py-2 mx-3 border-b border-gray-200"
             onClick={(event, index) => {
               if (currentType === "boolean") {
                 // Do nothing for boolean type
@@ -2681,12 +5679,15 @@ export default function Home() {
               }
             }}
             >
-          <h2>{`${obj.title}`}</h2>
+          <h2 className='text-white'>{`${obj.title}`}</h2>
          <p
+          className='text-white'
           
-         >{hasNext === true ? <Button size='xs' outline>
+         >{hasNext === true ?<>{/* <Button size='xs'>
             <HiOutlineArrowRight className="h-6 w-6" />
-          </Button> :
+          </Button> */}  <button className='mr-3 bg-transparent flex items-center'> 
+        <HiOutlineArrowRight className="h-6 w-6 text-white" />
+      </button></>:
             currentType === "boolean" ? (
               <label className="inline-flex relative items-center cursor-pointer">
                 <input
@@ -2694,16 +5695,10 @@ export default function Home() {
                   className="sr-only peer"                  
                   checked={valueToShow}
                   onChange={async (event) => {
-                      console.log("Event issss ", event.target.checked);
-                      console.log("Current Route is ", cleanedRouter);
                       const copiedData = JSON.parse(JSON.stringify(data));
-                      console.log("Copied Data is ", copiedData);
                       const updatedData = setNestedProperty(copiedData, cleanedRouter, event.target.checked);
-                      console.log("Updated Data is ", updatedData);
                       if(updatedData){
-                        //Let's update the data
                         const responses = await updateFormData(updatedData);
-                        console.log("Responses is ", responses);
                         if(responses){
                           refetch();
                         }
@@ -2722,16 +5717,195 @@ export default function Home() {
 
 
 
+  const backButtonHandlcer = () => {
+    const splites = selectedTitle.journey.split('.');
+    const countProperties = splites.filter(item => item === 'properties').length;
+    //We can assume that if the count of properties is 1, then we are at the top level
+    if(countProperties === 1){
+        setSelectedTitle(null);
+    }else {
+      const currentRoute = selectedTitle.journey;
+      const splites = currentRoute.split('.');
+      const previousRoute = splites.slice(0, splites.length - 2).join('.');
+      const previousValue = getNestedProperty(schema, previousRoute);
+      const title = previousValue.title;
+      const type = previousValue.type;
+      const subTitles = previousValue.properties;
+      const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
+        const title = subTitles[subItem].title;
+        const type = subTitles[subItem].type;
+        const key = subItem;
+        const journey = `${previousRoute}.properties.${subItem}`;
+        const hasNext = type === "object" ? true : false;
+        return {
+          title,
+          type,
+          key,
+          journey,
+          hasNext
+        };
+      })
+
+      setSelectedTitle((prev) => {
+        return {
+          ...prev,
+          key: previousValue.key,
+          title: title,
+          subTitles: updatedSubTitles,
+          type: type,
+          previous: selectedTitle.title,
+          current: previousValue.key,
+          hasNext: true, // This is for the back button
+          journey: previousRoute
+        };
+      })                    
+    }
+}
+
+
+return(
+  <div className='flex items-center justify-center h-screen bg-gray-800'>
+    <div className='flex flex-col max-h-[480px] max-w-[800px] bg-gray-500 h-[480px] w-[800px] border-2 border-[#bb394e]'>
+    {!selectedTitle ?
+      <div className="w-full h-full flex flex-col justify-center items-center px-4 py-4 bg-gray-600">
+        {/*  <div className="w-full min-h-screen flex flex-col justify-center items-center px-4 py-4 bg-gray-600"> */}
+        <div className='grid grid-cols-2 md:grid-cols-3 gap-4 max-w-lg'>
+          <Card className="max-w-lg justify-center items-center">
+            <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
+              {"Main Screen"}
+            </h5>
+            <Button color="grey" onClick={() => {
+              navigate("/");
+            }}>
+              <HiHome className="h-6 w-6" />
+            </Button>
+          </Card>
+          {mainTitles.map((item, index) => {
+            const id = item[index];
+            const title = schema.properties[item].title;
+            const type = schema.properties[item].type;
+
+            let icon = null
+            if (title.includes("Settings")) {
+              icon = <MdOutlineSettings className="h-6 w-6" />
+
+            }
+
+            const subTitles = schema.properties[item].properties;
+
+            //console.log("Subtitles are ", subTitles);
+
+            const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
+              const title = subTitles[subItem].title;
+              const type = subTitles[subItem].type;
+              const key = subItem;
+              const journey = `schema.properties.${item}.properties.${subItem}`;
+              const hasNext = type === "object" ? true : false;
+              return {
+                title,
+                type,
+                key,
+                journey,
+                hasNext,
+              };
+            })
+            //console.log("Updated Subtitles are ", updatedSubTitles);
+            return (
+              <Card key={index} className="max-w-md justify-center items-center">
+                <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
+                  {title}
+                </h5>
+                <Button color="grey" onClick={() => {
+                  setSelectedTitle({
+                    key: item,
+                    title: title,
+                    subTitles: updatedSubTitles,
+                    /*  currentView: updatedSubTitles.length > 8 ? {
+                       start: 0, 
+                       end: 7
+                     }: {
+                       start: 0,
+                       end: updatedSubTitles.length
+                     }, */
+                    currentView: {
+                      start: 0,
+                      end: updatedSubTitles.length
+                    },
+                    type: type,
+                    previous: null,
+                    current: item,
+                    hasNext: true, // This is for the back button
+                    journey: `schema.properties.${item}`
+                  });
+                }}>{icon ? icon : null}
+                </Button>
+              </Card>
+            )
+          })}
+        </div>
+      </div>
+      : <>
+          <div id="content" className="bg-gray-800 space-y-1 flex flex-col justify-start w-[100%] h-[100%] overflow-y-scroll">
+          <Navbar fluid  className='bg-[#ff8000] sticky top-0 z-50'>
+          <div className='flex flex-row items-center justify-center space-x-0'>
+      <button onClick={backButtonHandlcer} className='mr-3 bg-transparent flex items-center'> 
+        <HiOutlineArrowLeft className="h-6 w-6 text-black" />
+      </button>
+      <Navbar.Brand className="flex items-center">
+        <span className="self-center whitespace-nowrap text-l font-semibold dark:text-white">{`${selectedTitle.title}`}</span>
+      </Navbar.Brand>
+    </div>
+    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${systemStatus}`}</span>
+    <div className="flex md:order-2">
+              <button
+                className='flex items-center justify-center p-2 rounded-md hover:bg-[#ff8000] hover:bg-opacity-50 bg-transparent'
+                onClick={() => {
+                  setSelectedTitle(null);
+                }}
+              >
+                <RxHamburgerMenu className="h-7 w-7" />
+              </button>
+             
+            </div>
+          </Navbar>        
+          {memoedList}         
+        </div>
+      </>}
+    </div>
+
+  </div>
+)
+
+
 
   return (
-    <>
+   /*  */
+   <>
+   <div className="flex items-center justify-center mx-auto bg-gray-500 max-w-[800px] max-h-[480px] overflow-scroll"> 
       {!selectedTitle ?
-        <div className="w-full min-h-screen flex flex-col justify-center items-center px-4 py-4">
-          <div className='grid grid-cols-2 md:grid-cols-3 gap-4 max-w-lg'>
+       <div className="w-full h-full flex flex-col justify-center items-center px-4 py-4 bg-gray-600">
+       {/*  <div className="w-full min-h-screen flex flex-col justify-center items-center px-4 py-4 bg-gray-600"> */}
+          <div className='grid grid-cols-2 md:grid-cols-2 gap-4 max-w-lg'>
+          <Card  className="max-w-lg justify-center items-center">
+                  <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
+                    {"Main Screen"}
+                  </h5>
+                  <Button color="grey" onClick={() => {                 
+                    navigate("/");
+                  }}>
+                    <HiHome className="h-6 w-6"/>
+                  </Button>
+                </Card>
             {mainTitles.map((item, index) => {
               const id = item[index];
               const title = schema.properties[item].title;
               const type = schema.properties[item].type;
+
+              let icon = null 
+              if(title.includes("Settings")){
+                icon = <MdOutlineSettings className="h-6 w-6" />
+
+              }
 
               const subTitles = schema.properties[item].properties;
 
@@ -2753,7 +5927,7 @@ export default function Home() {
                })
               //console.log("Updated Subtitles are ", updatedSubTitles);
               return (
-                <Card key={index} className="max-w-lg justify-center items-center">
+                <Card key={index} className="max-w-md justify-center items-center">
                   <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
                     {title}
                   </h5>
@@ -2779,7 +5953,7 @@ export default function Home() {
                       hasNext: true, // This is for the back button
                       journey: `schema.properties.${item}`
                     });
-                  }}>
+                  }}>{icon ? icon : null}
                   </Button>
                 </Card>
               )
@@ -2787,263 +5961,76 @@ export default function Home() {
           </div>
         </div>
         :
-        <>
-          <Navbar fluid rounded className='bg-[#ff8000]'>
-            <Navbar.Brand href="https://flowbite-react.com">
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${selectedTitle.title}`}</span>
-            </Navbar.Brand>
-            <div className="flex md:order-2">
-             {/*  <Button
-                color="grey"
-                onClick={() => {
-                  setSelectedTitle(null);
-                }}
-              >     
-                <HiHome className="h-7 w-7" />
-              </Button> */}
+         <>   
+   {/* <div id="content" className="bg-gray-800 space-y-1 flex flex-col justify-start" >  */}
+      <div id="content" className="bg-gray-800 space-y-1 flex flex-col justify-start w-[100%] h-[100%]">
+          <Navbar fluid  className='bg-[#ff8000] sticky top-0 z-50'>
+          <div className='flex flex-row items-center justify-center space-x-0'>
+      <button onClick={backButtonHandlcer} className='mr-3 bg-transparent flex items-center'> 
+        <HiOutlineArrowLeft className="h-6 w-6 text-black" />
+      </button>
+      <Navbar.Brand className="flex items-center">
+        <span className="self-center whitespace-nowrap text-l font-semibold dark:text-white">{`${selectedTitle.title}`}</span>
+      </Navbar.Brand>
+    </div>
+    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{`${systemStatus}`}</span>
+    <div className="flex md:order-2">
               <button
                 className='flex items-center justify-center p-2 rounded-md hover:bg-[#ff8000] hover:bg-opacity-50 bg-transparent'
                 onClick={() => {
                   setSelectedTitle(null);
                 }}
               >
-                <HiHome className="h-7 w-7" />
+                <RxHamburgerMenu className="h-7 w-7" />
               </button>
              
             </div>
-          </Navbar>
-         {/*  {Object.keys(selectedTitle.subTitles).map((menu, index) => {            
-            const obj = selectedTitle.subTitles[menu];
-            let valueToShow = null;
-            let cleanedRouter = null;
-            try {
-              const currentRoute = obj?.journey ? obj.journey : null;
-              if (currentRoute) {
-                const routeArrays = currentRoute.split('.');
-                const withoutProperties = routeArrays.filter(item => item !== 'properties')
-                if (withoutProperties.length > 1) {
-                  withoutProperties.shift();
-                }
-                cleanedRouter = withoutProperties.join('.');
-                console.log("Form Data is ", data);
-                const value = getNestedProperty(data, cleanedRouter);
-                if(value){
-                  if(Array.isArray(value)){
-                    valueToShow = value[0];
-                  }else{
-                    valueToShow = value;
-                  }
-                }
-              }
-            } catch (err) {
-
-            }
-            const { hasNext, type: currentType,  } = obj
-            //if(index < start || index > end){
-            //  return null;
-            //}
-
-            return <div className="columns-1 mx-4">
-              <div 
-                  key={index} 
-                  className="flex flex-row justify-between justify-items-center py-2"
-                  onClick={(event, index) => {
-                    if (currentType === "boolean") {
-                      // Do nothing for boolean type
-                      return;
-                    }
-                    if (obj.type === "object") {
-                      let currentRoute = obj.journey;
-                      currentRoute = currentRoute.replace("schema.properties.", "properties.");
-                      const nestedValue = getNestedProperty(schema, currentRoute);
-                      //console.log("Clicked Obj details is ", nestedValue);
-                      const title = nestedValue.title;
-                      const type = nestedValue.type;
-                      const subTitles = nestedValue.properties;
-                      const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
-                        const title = subTitles[subItem].title;
-                        const type = subTitles[subItem].type;
-                        const key = subItem;
-                        const journey = `${currentRoute}.properties.${subItem}`;
-                        const hasNext = type === "object" ? true : false;
-                        return {
-                          title,
-                          type,
-                          key,
-                          journey,
-                          hasNext
-                        };
-                      })
-                      setSelectedTitle((prev) => {
-                        return {
-                          ...prev,
-                          key: obj.key,
-                          title: title,
-                          subTitles: updatedSubTitles,
-                          type: type,
-                          previous: selectedTitle.title,
-                          current: obj.key,
-                          hasNext: true, // This is for the back button
-                          journey: currentRoute,
-                        }
-
-                      })
-                    } else {
-                      toggleDialog({ event, selected: obj })
-                    }
-                  }}
-                  >
-                <h2>{`${obj.title}`}</h2>
-               <p
-                
-               >{hasNext === true ? <Button size='xs' outline>
-                  <HiOutlineArrowRight className="h-6 w-6" />
-                </Button> :
-                  currentType === "boolean" ? (
-                    <label className="inline-flex relative items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={valueToShow}
-                        onChange={async (event) => {
-                            console.log("Event is ", event.target.checked);
-                            console.log("Current Route is ", cleanedRouter);
-                            const copiedData = JSON.parse(JSON.stringify(data));
-                            console.log("Copied Data is ", copiedData);
-                            const updatedData = setNestedProperty(copiedData, cleanedRouter, event.target.checked);
-                            console.log("Updated Data is ", updatedData);
-                            
-
-                            if(updatedData){
-                              //Let's update the data
-
-                              const responses = await updateFormData(updatedData);
-                              console.log("Responses is ", responses);
-                              if(responses){
-                                refetch();
-                              }
-                            }
-                        }}
-                      />
-                      <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
-                    </label>
-                  ) : valueToShow ? valueToShow : "N/A"
-                }</p>
-              </div>
-            </div>
-          })} */}
-          {memoedList}
-           <div className="columns-1 mx-4">
-           <div className="flex flex-row justify-between justify-items-center py-2">            
-           <Button size='xs' className='bg-[#ff8000] hover:bg-yellow-500' outline
-                onClick={() =>{
-                    const splites = selectedTitle.journey.split('.');
-                    const countProperties = splites.filter(item => item === 'properties').length;
-                    //We can assume that if the count of properties is 1, then we are at the top level
-                    if(countProperties === 1){
-                        setSelectedTitle(null);
-                    }else {
-                      const currentRoute = selectedTitle.journey;
-                      const splites = currentRoute.split('.');
-                      const previousRoute = splites.slice(0, splites.length - 2).join('.');
-                      const previousValue = getNestedProperty(schema, previousRoute);
-                      const title = previousValue.title;
-                      const type = previousValue.type;
-                      const subTitles = previousValue.properties;
-                      const updatedSubTitles = Object.keys(subTitles).map((subItem, index) => {
-                        const title = subTitles[subItem].title;
-                        const type = subTitles[subItem].type;
-                        const key = subItem;
-                        const journey = `${previousRoute}.properties.${subItem}`;
-                        const hasNext = type === "object" ? true : false;
-                        return {
-                          title,
-                          type,
-                          key,
-                          journey,
-                          hasNext
-                        };
-                      })
-
-                      setSelectedTitle((prev) => {
-                        return {
-                          ...prev,
-                          key: previousValue.key,
-                          title: title,
-                          subTitles: updatedSubTitles,
-                          type: type,
-                          previous: selectedTitle.title,
-                          current: previousValue.key,
-                          hasNext: true, // This is for the back button
-                          journey: previousRoute
-                        };
-                      })                    
-                    }
-                }}            
-            >    <HiOutlineArrowLeft className="h-6 w-6" />
-                </Button>
-                  <div className="flex-grow text-center">
-                  <div className="flex justify-center space-x-2">
-                    {/* <Button size='xs' outline 
-                        disabled={selectedTitle.currentView.end === selectedTitle.subTitles.length}
-                        onClick={() =>{
-                          const toBeStart = selectedTitle.currentView.start + 7
-                          const safeToBeEnd = toBeStart + 7
-                          const total = selectedTitle.subTitles.length
-                          setSelectedTitle((prev) => {
-                              return{
-                                ...prev, 
-                                currentView: {
-                                  start: toBeStart,
-                                  end: safeToBeEnd > total ? total : safeToBeEnd
-                                }
-                              }  
-                          })                        
-                        }}
-                    >
-                      <HiOutlineArrowDown className="h-6 w-6" />
-                    </Button>
-                    <Button size='xs' outline 
-                        disabled={selectedTitle.currentView.start === 0}
-                        onClick={() =>{
-                            const safeToStart = selectedTitle.currentView.start - 7
-                            const safeToBeEnd = safeToStart + 7
-                            const total = selectedTitle.subTitles.length
-                            const lastPage = total % 7
-                            setSelectedTitle((prev) =>{
-                              return {
-                                ...prev, 
-                                currentView: {
-                                  start: safeToStart < 0 ? 0 : safeToStart,
-                                  end: safeToBeEnd < total ? safeToBeEnd : total
-                                }
-                              }
-                            })
-                        }}
-                    >
-                      <HiOutlineArrowUp className="h-6 w-6" />
-                    </Button> */}
-                  </div>
-                </div>
-                
-                 
-            
-            </div>
-          
-                
-          </div>
+          </Navbar>        
+          {memoedList}         
+        </div>
         </>
       }
 
-      {showDialog.show == true && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white w-full h-full flex flex-col justify-between">        
+{/* {showDialog.show1 == true && (
+        <div className="absolute inset-0  bg-black bg-opacity-50 flex items-start justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h3 className="text-lg font-bold text-gray-800 mb-4">
+              Dialog Title
+            </h3>
+            <p className="text-gray-600 mb-6">This is the dialog content.</p>
+            <div className="flex justify-end space-x-2">
+              <button
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+                onClick={() => setShowDialog(false)}
+              >
+                Cancel
+              </button>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )} */}
+ 
+       
+       
+      {showDialog.show == true &&  <div className="absolute inset-0  bg-black bg-opacity-50 flex items-start justify-center z-50">
+
+        
+        {/* 
+          original
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+       
+          <div className="bg-white w-full h-full flex flex-col justify-between">   */}    
+          <div className='w-[800px] h-[470px] flex flex-col justify-between'>
           <div className="flex justify-start items-center p-4 border-b bg-[#ff8000]">            
             <Button size='xs' onClick={toggleDialog} className='mr-3 bg-transparent'> 
               <HiOutlineArrowLeft className="h-6 w-6 text-black" />
             </Button>
-            <h2 className="text-xl font-semibold">{showDialog.selected.title}</h2>
+            <h2 className="text-xl font-semibold">{showDialog?.selected?.title}</h2>
             </div>
-          <div className="p-4 flex-1 overflow-y-auto">
+          <div className="p-4 flex-1 overflow-y-auto bg-gray-300">
             <div className="space-y-4">
               <div className="space-y-0">
                 {showDialog?.selected?.description ?
@@ -3320,14 +6307,29 @@ export default function Home() {
                             <p>{`${showDialog?.description ? showDialog?.description: ""}`}</p>  
                             </div>
                     </div>
-                     <div className='flex justify-between mt-2'>              
-                        <p>{ `${(showDialog?.dCurrentView?.currentPage + 1)} / ${showDialog?.dCurrentView?.totalPages}`}</p>
-                        <button onClick={toggleDialog} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-500">
-                          Cancel
-                      </button>
-                
-                        
-                      </div>
+
+                    {showDialog?.dCurrentView?.totalPages > 1 ? (<div className='flex justify-between mt-2'>      
+                             
+                             <p>{ `${(showDialog?.dCurrentView?.currentPage + 1)} / ${showDialog?.dCurrentView?.totalPages}`}</p>
+                             <button onClick={toggleDialog} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-500">
+                               Cancel
+                           </button>
+                     
+                             
+                           </div>
+                    
+                    ) :  <div className='flex justify-end mt-2'>      
+                             
+                    <button onClick={toggleDialog} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-500">
+                      Cancel
+                  </button>
+            
+                    
+                  </div>
+                    }
+
+
+                    
                       </>
                       ) :<div className="flex justify-between">
                   <div className="w-1/2 flex flex-col items-start space-y-2">
@@ -3356,7 +6358,7 @@ export default function Home() {
                     {['1', '2', '3', '4', '5', '6', '7', '8', '9',  '.', '0','-', 'Del'].map((buttonValue) => (
                       <button
                         key={buttonValue}
-                        className="bg-gray-200 p-2 rounded"
+                        className="bg-gray-500 p-2 rounded"
                         onClick={() => handleButtonClick(buttonValue)}
                       >
                         {buttonValue}
@@ -3375,7 +6377,7 @@ export default function Home() {
               <button onClick={toggleDialog} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-500">
                 Cancel
               </button>      
-              <button onClick={letUpdate} className="px-4 py-2 bg-[#ff8000] text-white rounded hover:bg-yellow-500">
+              <button onClick={letUpdate} className="px-4 py-2 bg-[#ff8000] text-black rounded hover:bg-yellow-500">
                 Update
               </button>
             </div>}
@@ -3389,76 +6391,9 @@ export default function Home() {
       </div>
       }
 
+   </div> 
     </>
   );
 
 
-  return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center px-4 py-4">
-      <div className='grid grid-cols-2 md:grid-cols-3 gap-4 max-w-lg'>
-        {/*  {titles.map((item, index) => {
-          const id = Object.keys(item)[0]
-          const title = item[id].title;
-          return (
-            <Card key={index} className="max-w-lg justify-center items-center">
-                <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
-                    {title}
-            </h5>
-            <Button color="grey" onClick={() =>{
-                navigate(`/${item[id].key}`);
-            }}>
-                  {item[id].icon}
-
-            </Button>
-            </Card>
-          );
-        })} */}
-        {
-          !selectedTitle ? mainTitles.map((item, index) => {
-            const id = item[index];
-            const title = schema.properties[item].title;
-            return (
-              <Card key={index} className="max-w-lg justify-center items-center">
-                <h5 className="text-2l font-light tracking-tight text-gray-900 dark:text-white">
-                  {title}
-                </h5>
-                <Button color="grey" onClick={() => {
-                  //navigate(`/${item[id].key}`);
-                  //navigate(`/${item}`);                  
-                  //navigate(`/parameters`);
-                  setSelectedTitle({
-                    key: item,
-                    title: title
-                  });
-                }}>
-                  {/* {item[id].icon} */}
-
-                </Button>
-              </Card>
-            );
-          })
-            :
-            <Navbar fluid rounded>
-              <Navbar.Brand href="https://flowbite-react.com">
-                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{selectedTitle.title}</span>
-              </Navbar.Brand>
-              <div className="flex md:order-2">
-                <Button
-                  color="grey"
-                  onClick={() => {
-                    //navigate("/");
-                    setSelectedTitle(null);
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
-                  </svg>
-                </Button>
-                <Navbar.Toggle />
-              </div>
-            </Navbar>
-        }
-      </div>
-    </div>
-  );
-};
+}
